@@ -92,47 +92,81 @@ var response = null;
 var model_id = null;
 var query_url = null;
 
+// Try and make a general "good" response.
+function _good_response_handler(resp){
+
+    // "Display" the returning data.
+    show(resp.data());
+    
+    // Extract any model ID and assign it to the environment as the
+    // default--probably only useful when a model is being created and
+    // we want to add stuff on.
+    if( resp.model_id() ){
+	var mid = resp.model_id();
+	model_id = mid;
+	repl_run.context['model_id'] = mid;
+    }
+
+    // Add the response back into the REPL environment.
+    repl_run.context['response'] = resp;
+}
+
 // Generic way of handling problems during responses.
-function _announce_problem(type, resp, man){
+function _bad_response_handler(type, resp, man){
+
+    // Deliver a mostly coherent error message.
     console.error('\n');
     console.error('There was a '+ type + ' (' +
 		  resp.message_type() + '): ' + resp.message());
     console.error('\n');
+
+    // If the response id defined, assign it back into the REPL.
+    if( resp ){
+	repl_run.context['response'] = resp;
+    }else{
+	resp = null;
+    }
 }
 
 // "prerun" callback.
 manager.register('prerun', 'default_pre', function(){
-    console.log('prerun...');
+    console.log('Starting...');
 });
 
 // "postrun" callback.
 manager.register('postrun', 'default_post', function(){
-    console.log('postrun...');
+    console.log('Completed.');
 });
 
 // "manager_error" callback.
 manager.register('manager_error', 'default_manager_error', function(resp, man){
-    _announce_problem('manager error', resp, man);
-    repl_run.context['response'] = resp;
+    _bad_response_handler('manager error', resp, man);
 });
 
 // "error" callback.
 manager.register('error', 'default_error', function(resp, man){
-    _announce_problem('error', resp, man);
-    repl_run.context['response'] = resp;
+    _bad_response_handler('error', resp, man);
 });
 
 // "warning" callback.
 manager.register('warning', 'default_warning', function(resp, man){
-    _announce_problem('warning', resp, man);
-    repl_run.context['response'] = resp;
+    _bad_response_handler('warning', resp, man);
 });
 
-// // Tag on manger and result contexts.
-// repl_run.context['manager'] = manager;
-// repl_run.context['request_set'] = request_set;
-// repl_run.context['response'] = response;
-// repl_run.context['model_id'] = model_id;
+// "meta" callback.
+manager.register('meta', 'default_meta', function(resp, man){
+    _good_response_handler(resp);
+});
+
+// "merge" callback.
+manager.register('merge', 'default_merge', function(resp, man){
+    _good_response_handler(resp);
+});
+
+// "rebuild" callback.
+manager.register('rebuild', 'default_rebuild', function(resp, man){
+    _good_response_handler(resp);
+});
 
 ///
 /// Activites.
@@ -158,7 +192,6 @@ function get_relations(){
     manager.request_with(request_set);
     query_url = manager.request_with(request_set);
 }
-//repl_run.context['get_relations'] = get_relations;
 
 function add_individual(cls_expr){
     request_set = new bbopx.minerva.request_set(token, model_id);
@@ -167,7 +200,6 @@ function add_individual(cls_expr){
     repl_run.context['request_set'] = request_set;
     repl_run.context['query_url'] = query_url;
 }
-//repl_run.context['add_individual'] = add_individual;
 
 ///
 /// Export important things to REPL environment.
@@ -175,15 +207,18 @@ function add_individual(cls_expr){
 
 var export_context =
 	[
-	    'token',
+	    // Helpers.
 	    'bbop',
 	    'bbopx',
-	    'show',
 	    'manager',
+	    // Auto-variables
+	    'token',
+	    'model_id',
 	    'request_set',
 	    'response',
-	    'model_id',
 	    'query_url',
+	    // Actions.
+	    'show',
 	    'get_relations',
 	    'add_individual'
 	];
@@ -191,10 +226,9 @@ export_context.forEach(function(symbol){
     eval("repl_run.context['"+symbol+"'] = "+symbol+";");
 });
 
-// var r = new bbopx.minerva.request_set(token);
-// r.get_relations();
+// get_relations();
 //
-// model_id = 'gomodel:553856550000001'; add_individual('GO:0022008');
+// model_id = 'gomodel:55395ad40000001'; add_individual('GO:0022008');
 
 // // Closure test--this works in repl.
 // var close_i = 2;
