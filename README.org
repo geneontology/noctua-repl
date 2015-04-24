@@ -5,7 +5,7 @@
 
 * Overview
 
-  This is a REPL environment for the Noctua annotation tool.
+  This is a REPL environment for the [[https://github.com/geneontology/noctua][Noctua]] annotation tool.
 
 * Usage
 
@@ -14,6 +14,9 @@
 
   Know your target installation well enough to know where your Barista
   is hiding. Copy that URL down.
+
+  You might also need to know your Barista definition--is defaults to
+  "minerva_local".
 
   Should then be as simple as:
 
