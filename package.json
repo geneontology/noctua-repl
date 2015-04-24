@@ -1,40 +1,44 @@
 {
-    "name": "noctua-repl",
-    "version": "0.1.0",
-    "description": "Interactive programming interface for noctua (Barista->Minerva).",
-    "keywords": [
-	"application",
-	"gene ontology",
-	"GO",
-	"REPL",
-	"amigo",
-	"bbop",
-	"bbopx",
-	"pup-tent",
-	"noctua",
-	"barista"
-    ],
-    "author": {
-	"name": "SJC",
-	"email": "sjcarbon@lbl.gov",
-	"url": "http://berkeleybop.org/"
-    },
-    "homepage": "http://berkeleybop.org/",
-    "repository": {
-	"type": "git",
-	"url": "https://github.com/geneontology/noctua-repl"
-    },
-    "engines": {
-	"node": ">= 0.12.2",
-	"npm": ">= 2.7.4"
-    },
-    "bin": {
-	"noctua-repl": "./bin/noctua-repl.js"
-    },
-    "dependencies": {
-	"underscore": "~1.8.3",
-	"minimist": "~1.1.1",
-	"bbop": "~2.3.0",
-	"bbopx": "~0.9.14"
-    }
+  "name": "noctua-repl",
+  "version": "0.1.0",
+  "description": "Interactive programming interface for noctua (Barista->Minerva).",
+  "keywords": [
+    "application",
+    "gene ontology",
+    "GO",
+    "REPL",
+    "amigo",
+    "bbop",
+    "bbopx",
+    "pup-tent",
+    "noctua",
+    "barista"
+  ],
+  "author": {
+    "name": "SJC",
+    "email": "sjcarbon@lbl.gov",
+    "url": "http://berkeleybop.org/"
+  },
+  "homepage": "http://berkeleybop.org/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/geneontology/noctua-repl"
+  },
+  "engines": {
+    "node": ">= 0.12.2",
+    "npm": ">= 2.7.4"
+  },
+  "bin": {
+    "noctua-repl": "./bin/noctua-repl.js"
+  },
+  "dependencies": {
+    "underscore": "~1.8.3",
+    "minimist": "~1.1.1",
+    "bbop": "~2.3.0",
+    "bbopx": "~0.9.14"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "gulp-jsdoc": "^0.1.4"
+  }
 }
