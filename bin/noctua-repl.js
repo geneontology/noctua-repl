@@ -269,8 +269,17 @@ function add_individual(cls_expr){
     _request_and_save(manager, request_set);
 }
 
+/** Create a custom request set from the current environment. */
+function new_request_set(){
+    var mid = _get_current_model_id();
+
+    var reqs = new bbopx.minerva.request_set(token, mid);
+
+    return reqs;
+}
+
 /** Add a custom request set; probably necessary for linking. */
-function request(req_set){
+function request_with(req_set){
     _request_and_save(manager, req_set);
 }
 
@@ -300,15 +309,31 @@ var export_context =
 	    'get_model',
 	    'add_model',
 	    'add_individual',
-	    'request'
+	    'new_request_set',
+	    'request_with'
 	];
 export_context.forEach(function(symbol){
     eval("repl_run.context['"+symbol+"'] = "+symbol+";");
 });
 
+///
+/// REPL examples as we move forward with testing.
+///
+
 // get_meta();
-//
-// model_id = 'gomodel:taxon_9606-5539842e0000002'; add_individual('GO:0022008');
+
+// model_id = 'gomodel:taxon_9606-5539842e0000002'
+// add_individual('GO:0022008');
+// add_individual(intersection(['GO:0022008', 'GO:0008150']))
+
+// add_model()
+// var r = new_request_set()
+// r.add_fact([r.add_individual('GO:0022008'), r.add_individual('GO:0008150'), 'part_of'] )
+// request_with(r)
+
+///
+/// Some internal testing.
+///
 
 // // Closure test--this works in repl.
 // var close_i = 2;
