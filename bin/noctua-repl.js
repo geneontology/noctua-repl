@@ -11,6 +11,8 @@ var bbopx = require('bbopx');
 var fs = require('fs');
 var repl = require('repl');
 
+// var anchor = this;
+
 ///
 /// Helpers
 ///
@@ -77,12 +79,53 @@ var repl_run = repl.start({'prompt':
 			   'noctua@'+barista_server+'|'+barista_definition+'> ',
 			   'input': process.stdin,
 			   'output': process.stdout,
-			   'useGlobal': true
+			   'useGlobal': true//,
+			   // // Try and keep everything in this scope.
+			   // 'eval': function(cmd, context, filename, callback){
+			   //     console.log(cmd);
+			       
+			   //     callback(null, result);
+			   // }
 			  });
 
-// // Add BBOP(X).
-// repl_run.context['bbop'] = bbop;
-// repl_run.context['bbopx'] = bbopx;
+// Okay, this is a little hard to explain. It seems to be quite hard
+// to get this context to stay in sync with the REPLs running one once
+// it "forks". It seems like it somehow initially "copies" this
+// context and no long syncs after initialization. The exception seems
+// to be the context in repl_run.
+//
+// // To simplify this pattern, at the end of functions, to sync the
+// // environments, I use this pattern. The arguments are strings.
+// //
+// // Another, probably cleaner, way of doing this might be to write our
+// // own eval function and keep this context (anchor), but with so few
+// // examples, I'm williing to work with this for now.
+// function _contextualize(context, symbol, argument){
+//     if( ! argument ){ argument = symbol; } // often use single arg
+//     // eval(symbol+" = "+argument+";");
+//     // eval("repl_run.context['"+symbol+"'] = "+argument+";");
+//     eval.call(context, symbol+" = "+argument+";");
+//     eval.call(context, "repl_run.context['"+symbol+"'] = "+argument+";");
+//     eval("repl_run.context['"+symbol+"'] = "+argument+";");
+// }
+
+// Extract.
+function _get_current_model_id(){
+    var mid = repl_run.context['model_id'] || model_id;
+    return mid;
+}
+
+// Make the request and save the interesting products.
+function _request_and_save(manager, request_set){
+
+    // Request.
+    var query_url = manager.request_with(request_set);
+
+    // Capture.
+    repl_run.context['request_set'] = request_set;
+    repl_run.context['query_url'] = query_url;
+}
+
 
 // Add manager and default callbacks to repl.
 var manager = new bbopx.minerva.manager(barista_server, barista_definition,
@@ -101,11 +144,7 @@ function _good_response_handler(resp){
     // Extract any model ID and assign it to the environment as the
     // default--probably only useful when a model is being created and
     // we want to add stuff on.
-    if( resp.model_id() ){
-	var mid = resp.model_id();
-	model_id = mid;
-	repl_run.context['model_id'] = mid;
-    }
+    repl_run.context['model_id'] = resp.model_id();
 
     // Add the response back into the REPL environment.
     repl_run.context['response'] = resp;
@@ -121,11 +160,7 @@ function _bad_response_handler(type, resp, man){
     console.error('\n');
 
     // If the response id defined, assign it back into the REPL.
-    if( resp ){
-	repl_run.context['response'] = resp;
-    }else{
-	resp = null;
-    }
+    repl_run.context['response'] = resp;
 }
 
 // "prerun" callback.
@@ -172,6 +207,9 @@ manager.register('rebuild', 'default_rebuild', function(resp, man){
 /// Activites.
 ///
 
+/**
+ * Make best effort to show the structure of the given object.
+ */
 function show(x){
     if( x && x.structure ){
 	console.log(JSON.stringify(x.structure(), null, ' '));
@@ -180,54 +218,60 @@ function show(x){
     }
 }
 
+/** Union of given class expressions. */
 var union = bbopx.minerva.class_expression.union;
+
+/** Intersection of given class expressions. */
 var intersection = bbopx.minerva.class_expression.intersection;
+
+/** SVF attempt. */
 var svf = bbopx.minerva.class_expression.svf;
+
+/** Best attempt to contsruct class expressions. */
 var cls = bbopx.minerva.class_expression.cls;
 
 function get_meta(){
+
+    // Construct.
     request_set = new bbopx.minerva.request_set(token);
     request_set.get_meta();
-    manager.request_with(request_set);
-    query_url = manager.request_with(request_set);
+
+    _request_and_save(manager, request_set);
 }
 
 function get_model(){
-    request_set = new bbopx.minerva.request_set(token);
+    var mid = _get_current_model_id();
 
-    var mid = repl_run.context['model_id'] || model_id;
+    // Construct.
+    request_set = new bbopx.minerva.request_set(token);
     request_set.get_model(mid);
 
-    manager.request_with(request_set);
-
-    query_url = manager.request_with(request_set);
-
-    repl_run.context['request_set'] = request_set;
-    repl_run.context['query_url'] = query_url;
+    _request_and_save(manager, request_set);
 }
 
-// TODO:
+// 
 function add_model(){
 
-    // var mid = repl_run.context['model_id'] || model_id;
-    // //console.log('mid:' + mid);
-    // request_set = new bbopx.minerva.request_set(token, mid);
-    // request_set.add_individual(cls_expr);
+    // Construct.
+    request_set = new bbopx.minerva.request_set(token);
+    request_set.add_model();
 
-    // query_url = manager.request_with(request_set);
-
-    // repl_run.context['request_set'] = request_set;
-    // repl_run.context['query_url'] = query_url;
+    _request_and_save(manager, request_set);
 }
 
 function add_individual(cls_expr){
-    var mid = repl_run.context['model_id'] || model_id;
-    console.log('mid:' + mid);
+    var mid = _get_current_model_id();
+    
+    // Construct.
     request_set = new bbopx.minerva.request_set(token, mid);
     request_set.add_individual(cls_expr);
-    query_url = manager.request_with(request_set);
-    repl_run.context['request_set'] = request_set;
-    repl_run.context['query_url'] = query_url;
+
+    _request_and_save(manager, request_set);
+}
+
+/** Add a custom request set; probably necessary for linking. */
+function request(req_set){
+    _request_and_save(manager, req_set);
 }
 
 ///
@@ -255,7 +299,8 @@ var export_context =
 	    'get_meta',
 	    'get_model',
 	    'add_model',
-	    'add_individual'
+	    'add_individual',
+	    'request'
 	];
 export_context.forEach(function(symbol){
     eval("repl_run.context['"+symbol+"'] = "+symbol+";");
