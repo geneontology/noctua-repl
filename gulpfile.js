@@ -1,3 +1,7 @@
+////
+//// Usage: node ./node_modules/gulp/bin/gulp.js doc
+////
+
 var gulp = require('gulp');
 var jsdoc = require("gulp-jsdoc");
 
