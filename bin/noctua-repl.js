@@ -2,7 +2,7 @@
 //// REPL environment for Noctua.
 ////
 //// Currently testing with:
-////  : ~/local/src/git/noctua-repl$:) node ./bin/noctua-repl.js --token=123 --barista http://localhost:3400
+////  : ~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --barista http://localhost:3400
 ////
 
 var bbop = require('bbop');
@@ -180,21 +180,50 @@ function show(x){
     }
 }
 
-// function _ensure(){
-//     if( ! model_id ){
-	
-//     }
-// }
+var union = bbopx.minerva.class_expression.union;
+var intersection = bbopx.minerva.class_expression.intersection;
+var svf = bbopx.minerva.class_expression.svf;
+var cls = bbopx.minerva.class_expression.cls;
 
-function get_relations(){
+function get_meta(){
     request_set = new bbopx.minerva.request_set(token);
-    request_set.get_relations();
+    request_set.get_meta();
     manager.request_with(request_set);
     query_url = manager.request_with(request_set);
 }
 
+function get_model(){
+    request_set = new bbopx.minerva.request_set(token);
+
+    var mid = repl_run.context['model_id'] || model_id;
+    request_set.get_model(mid);
+
+    manager.request_with(request_set);
+
+    query_url = manager.request_with(request_set);
+
+    repl_run.context['request_set'] = request_set;
+    repl_run.context['query_url'] = query_url;
+}
+
+// TODO:
+function add_model(){
+
+    // var mid = repl_run.context['model_id'] || model_id;
+    // //console.log('mid:' + mid);
+    // request_set = new bbopx.minerva.request_set(token, mid);
+    // request_set.add_individual(cls_expr);
+
+    // query_url = manager.request_with(request_set);
+
+    // repl_run.context['request_set'] = request_set;
+    // repl_run.context['query_url'] = query_url;
+}
+
 function add_individual(cls_expr){
-    request_set = new bbopx.minerva.request_set(token, model_id);
+    var mid = repl_run.context['model_id'] || model_id;
+    console.log('mid:' + mid);
+    request_set = new bbopx.minerva.request_set(token, mid);
     request_set.add_individual(cls_expr);
     query_url = manager.request_with(request_set);
     repl_run.context['request_set'] = request_set;
@@ -219,16 +248,22 @@ var export_context =
 	    'query_url',
 	    // Actions.
 	    'show',
-	    'get_relations',
+	    'union',
+	    'intersection',
+	    'svf',
+	    'cls',
+	    'get_meta',
+	    'get_model',
+	    'add_model',
 	    'add_individual'
 	];
 export_context.forEach(function(symbol){
     eval("repl_run.context['"+symbol+"'] = "+symbol+";");
 });
 
-// get_relations();
+// get_meta();
 //
-// model_id = 'gomodel:55395ad40000001'; add_individual('GO:0022008');
+// model_id = 'gomodel:taxon_9606-5539842e0000002'; add_individual('GO:0022008');
 
 // // Closure test--this works in repl.
 // var close_i = 2;
