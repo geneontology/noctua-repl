@@ -5,7 +5,19 @@
 
 * Overview
 
-  This is a REPL environment for the [[https://github.com/geneontology/noctua][Noctua]] annotation tool.
+  This is a REPL environment for the [[https://github.com/geneontology/noctua][Noctua]] annotation tool. This gets
+  you some nice things:
+
+  1) You don't have to wait until UI functionality makes it into the
+     graph (or some other) editor--if the low-level API is capable of
+     expressing it, you can easily do it in the REPL.
+   
+  2) For some operations, it is easier to express them succinctly with
+     commands rather than work with a UI.
+
+  3) An extremely easy way of prototyping new functionality.
+
+  4) Spooky action at a distance.
 
 * Usage
 
