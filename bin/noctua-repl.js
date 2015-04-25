@@ -239,8 +239,11 @@ function get_meta(){
     _request_and_save(manager, request_set);
 }
 
-function get_model(){
-    var mid = _get_current_model_id();
+// Can be used to switch models, as well as view the current one.
+function get_model(mid){
+    if( ! mid ){
+	mid = _get_current_model_id();
+    }
 
     // Construct.
     request_set = new bbopx.minerva.request_set(token);
