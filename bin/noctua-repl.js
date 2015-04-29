@@ -119,7 +119,8 @@ function _get_current_model_id(){
 function _request_and_save(manager, request_set){
 
     // Request.
-    var query_url = manager.request_with(request_set);
+    query_url = manager.request_with(request_set);
+    //console.log('query: ', query_url);
 
     // Capture.
     repl_run.context['request_set'] = request_set;
@@ -333,6 +334,9 @@ export_context.forEach(function(symbol){
 // var r = new_request_set()
 // r.add_fact([r.add_individual('GO:0022008'), r.add_individual('GO:0008150'), 'part_of'] )
 // request_with(r)
+
+// get_model('gomodel:taxon_559292-5525a0fc0000001_all_indivdual')
+// request_with(new_request_set().add_annotation_to_fact('comment', 'foo', ['gomodel:taxon_559292-5525a0fc0000001-GO-0005515-5525a0fc0000023','gomodel:taxon_559292-5525a0fc0000001-GO-0005095-5525a0fc0000009','RO:0002408']));
 
 ///
 /// Some internal testing.
