@@ -35,7 +35,7 @@
     "underscore": "~1.8.3",
     "minimist": "~1.1.1",
     "bbop": "~2.3.0",
-    "bbopx": "~0.9.18"
+    "bbopx": "~0.9.19"
   },
   "devDependencies": {
     "gulp": "^3.8.11",
