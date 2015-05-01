@@ -341,6 +341,11 @@ export_context.forEach(function(symbol){
 // get_model('gomodel:taxon_559292-5525a0fc0000001_all_indivdual')
 // request_with(new_request_set().add_evidence('ECO:0000034', 'NEMO:0000001', ['gomodel:taxon_559292-5525a0fc0000001-GO-0005095-5525a0fc0000009','gomodel_taxon_559292-5525a0fc0000001-SGD-S000003814-553ff9ed0000002','RO:0002333']));
 
+// get_model('gomodel:taxon_559292-5525a0fc0000001_all_indivdual')
+// request_with(new_request_set().remove_type_from_individual(cls('SGD:S000003814'), 'gomodel_taxon_559292-5525a0fc0000001-SGD-S000003814-553ff9ed0000002'));
+// request_with(new_request_set().add_type_to_individual(cls('SGD:S000003814'), 'gomodel_taxon_559292-5525a0fc0000001-SGD-S000003814-553ff9ed0000002'));
+// request_with(new_request_set().add_type_to_individual(cls('SGD:S000003815'), 'gomodel_taxon_559292-5525a0fc0000001-SGD-S000003814-553ff9ed0000002'));
+
 ///
 /// Some internal testing.
 ///
