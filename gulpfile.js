@@ -1,5 +1,5 @@
 ////
-//// Usage: node ./node_modules/gulp/bin/gulp.js doc
+//// Usage: node ./node_modules/.bin/gulp doc
 ////
 
 var gulp = require('gulp');
