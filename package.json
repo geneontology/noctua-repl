@@ -36,8 +36,9 @@
 	"underscore": "~1.8.3",
 	"minimist": "~1.1.1",
 	"bbop": "~2.3.0",
-	"bbopx": "~0.9.23",
-	"class-expression": "~0.0.2"
+	"bbopx": "~0.9.25",
+	"bbop-graph-noctua": "0.0.11",
+	"class-expression": "~0.0.7"
     },
     "devDependencies": {
 	"gulp": "^3.8.11",
