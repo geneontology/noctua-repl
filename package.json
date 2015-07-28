@@ -8,7 +8,6 @@
 	"gene ontology",
 	"GO",
 	"REPL",
-	"amigo",
 	"bbop",
 	"bbopx",
 	"pup-tent",
@@ -33,15 +32,28 @@
 	"noctua-repl": "./bin/noctua-repl.js"
     },
     "dependencies": {
-	"underscore": "~1.8.3",
-	"minimist": "~1.1.1",
+        "bbop-core": "0.0.4",
 	"bbop": "~2.3.0",
-	"bbopx": "~0.9.25",
-	"bbop-graph-noctua": "0.0.11",
-	"class-expression": "~0.0.7"
+	"bbopx": "~0.9.31",
+	"bbop-graph-noctua": "0.0.18",
+	"class-expression": "~0.0.7",
+        "minerva-requests": "0.0.4",
+	"minimist": "~1.1.1",
+	"underscore": "~1.8.3"
     },
     "devDependencies": {
-	"gulp": "^3.8.11",
-	"gulp-jsdoc": "^0.1.4"
+        "chai": "^2.3.0",
+        "del": "^1.1.1",
+        "gulp": "^3.8.11",
+        "gulp-bump": "^0.3.0",
+        "gulp-git": "^1.2.3",
+        "gulp-jsdoc": "^0.1.4",
+        "gulp-mocha": "^2.0.1",
+        "gulp-pandoc": "^0.2.1",
+        "gulp-rename": "^1.2.2",
+        "gulp-shell": "^0.4.2",
+        "gulp-uglify": "^1.2.0",
+        "jsdoc": "^3.3.0",
+        "jsdoc-baseline": "git://github.com/hegemonic/jsdoc-baseline.git#74d1dc8075"
     }
 }

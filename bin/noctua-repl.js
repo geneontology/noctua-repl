@@ -33,7 +33,7 @@ var argv = require('minimist')(process.argv.slice(2));
 
 // token
 var token = argv['t'] || argv['token'];
-if( ! token || (what_is(token) != 'string' && what_is(token) != 'number' ) ){
+if( ! token || (what_is(token) !== 'string' && what_is(token) !== 'number' ) ){
     _die('Option (t|token) is required.');
 }else{
     console.log('Using user token: ' + token);
@@ -43,7 +43,7 @@ if( ! token || (what_is(token) != 'string' && what_is(token) != 'number' ) ){
 var barista_server = argv['s'] || argv['server'];
 //var barista_server_default = 'http://barista.berkeleybop.org';
 var barista_server_default = 'http://localhost:3400';
-if( ! barista_server || what_is(barista_server) != 'string' ){
+if( ! barista_server || what_is(barista_server) !== 'string' ){
     //_die('Option (s|server) is required.');
     barista_server = barista_server_default;
     console.log('Using default Barista server at: ' + barista_server);
@@ -54,7 +54,7 @@ if( ! barista_server || what_is(barista_server) != 'string' ){
 // barista_definition
 var barista_definition = argv['d'] || argv['definition'];
 var barista_definition_default = 'minerva_local';
-if( ! barista_definition || what_is(barista_definition) != 'string' ){
+if( ! barista_definition || what_is(barista_definition) !== 'string' ){
     //_die('Option (d|definition) is required.');
     barista_definition = barista_definition_default;
     console.log('Using default Barista definition at: ' + barista_definition);
@@ -64,7 +64,7 @@ if( ! barista_definition || what_is(barista_definition) != 'string' ){
 
 // TODO: (optional) file
 var file = argv['f'] || argv['file'];
-if( ! file || bbop.core.what_is(file) != 'string' ){
+if( ! file || bbop.core.what_is(file) !== 'string' ){
     // Is optional; pass.
 }else{
     console.log('[TODO] Run file: ' + file);
