@@ -4,6 +4,9 @@
 //// Currently testing with:
 ////  : ~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --barista http://localhost:3400
 ////
+//// Connection to labs with:
+////  : ~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --barista http://localhost:3400
+////
 
 // Util.
 var bbop = require('bbop-core');
@@ -14,6 +17,7 @@ var repl = require('repl');
 var barista_response = require('bbop-response-barista');
 var class_expression = require('class-expression');
 var minerva_requests = require('minerva-requests');
+var noctua_model = require('bbop-graph-noctua');
 
 //
 var sync_engine = require('bbop-rest-manager').sync_request;
@@ -130,13 +134,11 @@ function _get_current_model_id(){
 // Make the request and save the interesting products.
 function _request_and_save(manager, request_set){
 
-    // Request.
-    var response = manager.request_with(request_set);
-    //console.log('query: ', query_url);
+    // Request, let the synxchonous callbacks deal with with happens.
+    manager.request_with(request_set);
 
-    // Capture.
+    // Capture the incoming request.
     repl_run.context['request_set'] = request_set;
-    repl_run.context['query_url'] = query_url;
 }
 
 
@@ -146,6 +148,7 @@ var manager = new minerva_manager(barista_server, barista_definition,
 				  token, engine, 'sync');
 var request_set = null;
 var response = null;
+var model = null;
 var model_id = null;
 var query_url = null;
 
@@ -158,10 +161,33 @@ function _good_response_handler(resp){
     // Extract any model ID and assign it to the environment as the
     // default--probably only useful when a model is being created and
     // we want to add stuff on.
-    repl_run.context['model_id'] = resp.model_id();
+    var mid = resp.model_id();
+    if( mid ){
+	model_id = mid;
+	repl_run.context['model_id'] = mid;
+    }else{
+	model_id = null;
+	repl_run.context['model_id'] = null;
+    }
+
+    // If there are models, set them up in the environment.
+    var pre_model = new noctua_model.graph();
+    var d = resp.data();
+    if( d && pre_model.load_data_basic(d) ){
+	model = pre_model;
+	repl_run.context['model'] = pre_model;
+    }else{
+	model = null;
+	repl_run.context['model'] = null;
+    }
 
     // Add the response back into the REPL environment.
     repl_run.context['response'] = resp;
+
+    // TODO: can we easily extract this still? Probably not, what with
+    // all the POST and engine abstractions we have now. OTOH, it's
+    // easier to push tests upstream.
+    repl_run.context['query_url'] = null;
 }
 
 // Generic way of handling problems during responses.
@@ -224,11 +250,14 @@ manager.register('rebuild', function(resp, man){
 /**
  * Make best effort to show the structure of the given object.
  */
+var SILENT = false;
 function show(x){
-    if( x && x.structure ){
-	console.log(JSON.stringify(x.structure(), null, ' '));
-    }else{
-	console.log(JSON.stringify(x, null, ' '));
+    if( ! SILENT ){
+	if( x && x.structure ){
+	    console.log(JSON.stringify(x.structure(), null, ' '));
+	}else{
+	    console.log(JSON.stringify(x, null, ' '));
+	}
     }
 }
 
@@ -300,6 +329,27 @@ function request_with(req_set){
     _request_and_save(manager, req_set);
 }
 
+/**
+ * 
+ */
+function show_models(){
+
+    // Quietly get the meta information.
+    SILENT = true;
+    var meta_resp = manager.get_meta();
+    SILENT = false;
+    
+    // Display the info nicely.
+    var models_meta = meta_resp.models_meta();
+    each(models_meta, function(meta, mid){
+	var title = '<no title>';
+	var date = '????-??-??';
+	if( meta && meta['title'] ){ title = meta['title']; }
+	if( meta && meta['date'] ){ date = meta['date']; }
+	console.log(mid + "\t" + date + "\t" + title);
+    });
+}
+
 ///
 /// Export important things to REPL environment.
 ///
@@ -308,26 +358,30 @@ var export_context =
 	[
 	    // Helpers.
 	    'bbop',
-	    //'bbopx',
+	    'us',
 	    'manager',
+	    'show',
 	    // Auto-variables
 	    'token',
+	    'model',
 	    'model_id',
 	    'request_set',
 	    'response',
 	    'query_url',
-	    // Actions.
-	    'show',
+	    // Class expressions.
 	    'union',
 	    'intersection',
 	    'svf',
 	    'cls',
+	    // Manager actions.
 	    'get_meta',
 	    'get_model',
 	    'add_model',
 	    'add_individual',
 	    'new_request_set',
-	    'request_with'
+	    'request_with',
+	    // Bigger fun macros.
+	    'show_models'
 	];
 each(export_context, function(symbol){
     eval("repl_run.context['"+symbol+"'] = "+symbol+";");
