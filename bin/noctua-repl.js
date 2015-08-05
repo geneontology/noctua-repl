@@ -5,11 +5,19 @@
 ////  : ~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --barista http://localhost:3400
 ////
 
-var bbop = require('bbop');
-var bbopx = require('bbopx');
-// require('fs').readFileSync(process.env.TEST)+'');
+// Util.
+var bbop = require('bbop-core');
 var fs = require('fs');
+var us = require('underscore');
 var repl = require('repl');
+
+var barista_response = require('bbop-response-barista');
+var class_expression = require('class-expression');
+var minerva_requests = require('minerva-requests');
+
+//
+var sync_engine = require('bbop-rest-manager').sync_request;
+var minerva_manager = require('bbop-manager-minerva');
 
 // var anchor = this;
 
@@ -17,7 +25,9 @@ var repl = require('repl');
 /// Helpers
 ///
 
-var what_is = bbop.core.what_is;
+var what_is = bbop.what_is;
+
+var each = us.each;
 
 function _die(message){
     console.error(message);
@@ -31,7 +41,7 @@ function _die(message){
 var argv = require('minimist')(process.argv.slice(2));
 //console.dir(argv);
 
-// token
+// Get the (pretty much required) token.
 var token = argv['t'] || argv['token'];
 if( ! token || (what_is(token) !== 'string' && what_is(token) !== 'number' ) ){
     _die('Option (t|token) is required.');
@@ -39,7 +49,7 @@ if( ! token || (what_is(token) !== 'string' && what_is(token) !== 'number' ) ){
     console.log('Using user token: ' + token);
 }
 
-// barista_server
+// Aim at the proper/desired barista server.
 var barista_server = argv['s'] || argv['server'];
 //var barista_server_default = 'http://barista.berkeleybop.org';
 var barista_server_default = 'http://localhost:3400';
@@ -51,7 +61,7 @@ if( ! barista_server || what_is(barista_server) !== 'string' ){
     console.log('Using Barista server at: ' + barista_server);
 }
 
-// barista_definition
+// Work again the proper/desired barista definition.
 var barista_definition = argv['d'] || argv['definition'];
 var barista_definition_default = 'minerva_local';
 if( ! barista_definition || what_is(barista_definition) !== 'string' ){
@@ -62,9 +72,12 @@ if( ! barista_definition || what_is(barista_definition) !== 'string' ){
     console.log('Using Barista server at: ' + barista_server);
 }
 
+// The idea here is to be able to run a set of commands in the
+// environment in batch. Unlikely to happen until we can enforce a
+// synchronous client.
 // TODO: (optional) file
 var file = argv['f'] || argv['file'];
-if( ! file || bbop.core.what_is(file) !== 'string' ){
+if( ! file || what_is(file) !== 'string' ){
     // Is optional; pass.
 }else{
     console.log('[TODO] Run file: ' + file);
@@ -75,18 +88,17 @@ if( ! file || bbop.core.what_is(file) !== 'string' ){
 ///
 
 // Start repl.
-var repl_run = repl.start({'prompt':
-			   'noctua@'+barista_server+'|'+barista_definition+'> ',
-			   'input': process.stdin,
-			   'output': process.stdout,
-			   'useGlobal': true//,
-			   // // Try and keep everything in this scope.
-			   // 'eval': function(cmd, context, filename, callback){
-			   //     console.log(cmd);
-			       
-			   //     callback(null, result);
-			   // }
-			  });
+var repl_run = repl.start({
+    'prompt': 'noctua-repl@' + barista_server + '|' + barista_definition + '> ',
+    'input': process.stdin,
+    'output': process.stdout,
+    'useGlobal': true//,
+    // // Try and keep everything in this scope.
+    // 'eval': function(cmd, context, filename, callback){
+    //     console.log(cmd);    
+    //     callback(null, result);
+    // }
+});
 
 // Okay, this is a little hard to explain. It seems to be quite hard
 // to get this context to stay in sync with the REPLs running one once
@@ -119,7 +131,7 @@ function _get_current_model_id(){
 function _request_and_save(manager, request_set){
 
     // Request.
-    query_url = manager.request_with(request_set);
+    var response = manager.request_with(request_set);
     //console.log('query: ', query_url);
 
     // Capture.
@@ -129,8 +141,9 @@ function _request_and_save(manager, request_set){
 
 
 // Add manager and default callbacks to repl.
-var manager = new bbopx.minerva.manager(barista_server, barista_definition,
-					token, 'node', false);
+var engine = new sync_engine(barista_response);
+var manager = new minerva_manager(barista_server, barista_definition,
+				  token, engine, 'sync');
 var request_set = null;
 var response = null;
 var model_id = null;
@@ -165,42 +178,42 @@ function _bad_response_handler(type, resp, man){
 }
 
 // "prerun" callback.
-manager.register('prerun', 'default_pre', function(){
+manager.register('prerun', function(){
     console.log('Starting...');
 });
 
 // "postrun" callback.
-manager.register('postrun', 'default_post', function(){
+manager.register('postrun', function(){
     console.log('Completed.');
 });
 
 // "manager_error" callback.
-manager.register('manager_error', 'default_manager_error', function(resp, man){
+manager.register('manager_error', function(resp, man){
     _bad_response_handler('manager error', resp, man);
 });
 
 // "error" callback.
-manager.register('error', 'default_error', function(resp, man){
+manager.register('error', function(resp, man){
     _bad_response_handler('error', resp, man);
 });
 
 // "warning" callback.
-manager.register('warning', 'default_warning', function(resp, man){
+manager.register('warning', function(resp, man){
     _bad_response_handler('warning', resp, man);
 });
 
 // "meta" callback.
-manager.register('meta', 'default_meta', function(resp, man){
+manager.register('meta', function(resp, man){
     _good_response_handler(resp);
 });
 
 // "merge" callback.
-manager.register('merge', 'default_merge', function(resp, man){
+manager.register('merge', function(resp, man){
     _good_response_handler(resp);
 });
 
 // "rebuild" callback.
-manager.register('rebuild', 'default_rebuild', function(resp, man){
+manager.register('rebuild', function(resp, man){
     _good_response_handler(resp);
 });
 
@@ -220,21 +233,21 @@ function show(x){
 }
 
 /** Union of given class expressions. */
-var union = bbopx.minerva.class_expression.union;
+var union = class_expression.union;
 
 /** Intersection of given class expressions. */
-var intersection = bbopx.minerva.class_expression.intersection;
+var intersection = class_expression.intersection;
 
 /** SVF attempt. */
-var svf = bbopx.minerva.class_expression.svf;
+var svf = class_expression.svf;
 
 /** Best attempt to contsruct class expressions. */
-var cls = bbopx.minerva.class_expression.cls;
+var cls = class_expression.cls;
 
 function get_meta(){
 
     // Construct.
-    request_set = new bbopx.minerva.request_set(token);
+    request_set = new minerva_requests.request_set(token);
     request_set.get_meta();
 
     _request_and_save(manager, request_set);
@@ -247,7 +260,7 @@ function get_model(mid){
     }
 
     // Construct.
-    request_set = new bbopx.minerva.request_set(token);
+    request_set = new minerva_requests.request_set(token);
     request_set.get_model(mid);
 
     _request_and_save(manager, request_set);
@@ -257,18 +270,18 @@ function get_model(mid){
 function add_model(){
 
     // Construct.
-    request_set = new bbopx.minerva.request_set(token);
+    request_set = new minerva_requests.request_set(token);
     request_set.add_model();
 
     _request_and_save(manager, request_set);
 }
 
-function add_individual(cls_expr){
+function add_individual(cls_expr, ind_id){
     var mid = _get_current_model_id();
     
     // Construct.
-    request_set = new bbopx.minerva.request_set(token, mid);
-    request_set.add_individual(cls_expr);
+    request_set = new minerva_requests.request_set(token, mid);
+    request_set.add_individual(cls_expr, ind_id);
 
     _request_and_save(manager, request_set);
 }
@@ -277,7 +290,7 @@ function add_individual(cls_expr){
 function new_request_set(){
     var mid = _get_current_model_id();
 
-    var reqs = new bbopx.minerva.request_set(token, mid);
+    var reqs = new minerva_requests.request_set(token, mid);
 
     return reqs;
 }
@@ -295,7 +308,7 @@ var export_context =
 	[
 	    // Helpers.
 	    'bbop',
-	    'bbopx',
+	    //'bbopx',
 	    'manager',
 	    // Auto-variables
 	    'token',
@@ -316,7 +329,7 @@ var export_context =
 	    'new_request_set',
 	    'request_with'
 	];
-export_context.forEach(function(symbol){
+each(export_context, function(symbol){
     eval("repl_run.context['"+symbol+"'] = "+symbol+";");
 });
 
