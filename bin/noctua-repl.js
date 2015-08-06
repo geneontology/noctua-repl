@@ -363,9 +363,11 @@ function show_models(order_by){
     // Optional sorting step.
     if( order_by ){
 	cache = cache.sort(function(a, b){
-	    if( a[order_by] > b[order_by] ){
+	    var cmp_a = a[order_by].toLowerCase();
+	    var cmp_b = b[order_by].toLowerCase();
+	    if( cmp_a > cmp_b ){
 		return 1;
-	    }else if( a[order_by] === b[order_by] ){
+	    }else if( cmp_a === cmp_b ){
 		return 0;
 	    }else{
 		return -1;
