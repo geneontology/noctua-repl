@@ -16,7 +16,7 @@ var paths = {
     readme: ['./README.md'],
     //tests: ['tests/*.test.js', 'tests/*.tests.js'],
     tests: ['tests/*.test.js', 'tests/*.tests.js', '!tests/go.tests.js'],
-    docable: ['bin/*.js', './README.md'],
+    docable: ['lib/*.js', './README.md'],
     transients:['./doc/*', '!./doc/README.org']
 };
 
@@ -59,7 +59,7 @@ gulp.task('doc', ['jsdoc']);
 gulp.task('jsdoc', ['clean'], function(cb) {
     gulp.src('')
         .pipe(shell([
-	    './node_modules/.bin/jsdoc --verbose --template ./node_modules/jsdoc-baseline --readme ./README.md --destination ./doc/ ./lib/*.js'
+	    './node_modules/.bin/jsdoc --verbose --template ./node_modules/jsdoc-baseline --readme ./README.md --destination ./doc/ ./bin/*.js'
 	]));
     cb(null);
 });

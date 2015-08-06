@@ -1,6 +1,6 @@
 {
     "name": "noctua-repl",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "license": "BSD-3-Clause",
     "description": "Interactive programming interface for Noctua (Barista->Minerva).",
     "keywords": [
