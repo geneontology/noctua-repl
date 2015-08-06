@@ -5,7 +5,7 @@
 ////  : ~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --barista http://localhost:3400
 ////
 //// Connection to labs with:
-////  : ~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --barista http://localhost:3400
+////  : ~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --server http://toaster.lbl.gov:3399 --definition minerva_public_dev
 ////
 
 // Util.
@@ -71,9 +71,9 @@ var barista_definition_default = 'minerva_local';
 if( ! barista_definition || what_is(barista_definition) !== 'string' ){
     //_die('Option (d|definition) is required.');
     barista_definition = barista_definition_default;
-    console.log('Using default Barista definition at: ' + barista_definition);
+    console.log('Using default Barista definition: ' + barista_definition);
 }else{
-    console.log('Using Barista server at: ' + barista_server);
+    console.log('Using Barista definition: ' + barista_definition);
 }
 
 // The idea here is to be able to run a set of commands in the
@@ -332,21 +332,55 @@ function request_with(req_set){
 /**
  * 
  */
-function show_models(){
+function show_models(order_by){
 
     // Quietly get the meta information.
     SILENT = true;
     var meta_resp = manager.get_meta();
     SILENT = false;
     
-    // Display the info nicely.
+    // Data capture step.
     var models_meta = meta_resp.models_meta();
+    var cache = [];
     each(models_meta, function(meta, mid){
 	var title = '<no title>';
 	var date = '????-??-??';
+	var deprecated = '';
 	if( meta && meta['title'] ){ title = meta['title']; }
 	if( meta && meta['date'] ){ date = meta['date']; }
-	console.log(mid + "\t" + date + "\t" + title);
+	if( meta && meta['deprecated'] && meta['deprecated'] === "true" ){
+	    deprecated = '-';
+	}
+
+	cache.push({
+	    'id': mid,
+	    'date': date,
+	    'deprecated': deprecated,
+	    'title': title
+	});
+    });
+
+    // Optional sorting step.
+    if( order_by ){
+	cache = cache.sort(function(a, b){
+	    if( a[order_by] > b[order_by] ){
+		return 1;
+	    }else if( a[order_by] === b[order_by] ){
+		return 0;
+	    }else{
+		return -1;
+	    }	
+	});
+    }
+
+    // Display the info nicely.
+    each(cache, function(item){
+	console.log([
+	    item['id'],
+	    item['deprecated'],
+	    item['date'],
+	    item['title'],
+	].join("\t"));
     });
 }
 
