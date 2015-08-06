@@ -120,7 +120,7 @@
   - 'new_request_set'
   - 'request_with'
 
-  Bigger fun macros.
+  Bigger fun function macros.
 
   - 'show_models'
   - 'show_response'
