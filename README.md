@@ -4,15 +4,9 @@
   [Noctua](https://github.com/geneontology/noctua) annotation
   tool. This gets you some nice things:
 
-	1. You don't have to wait until UI functionality makes it into the
-       graph (or some other) editor--if the low-level API is capable of
-	   expressing it, you can easily do it in the REPL.
-   
-	2. For some operations, it is easier to express them succinctly with
-       commands rather than work with a UI.
-
+	1. You don't have to wait until UI functionality makes it into the graph (or some other) editor--if the low-level API is capable of expressing it, you can easily do it in the REPL.
+	2. For some operations, it is easier to express them succinctly with commands rather than work with a UI.
 	3. An extremely easy way of prototyping new functionality.
-
 	4. Spooky action at a distance.
 
 # Usage
@@ -28,55 +22,69 @@
 
   Should then be as simple as:
 
-  ```bash
-  npm install
-  node ./bin/noctua-repl.js --token=xyz321abc987 --barista http://127.0.0.1:3400
-  ```
+```bash
+npm install
+node ./bin/noctua-repl.js --token=xyz321abc987 --barista http://127.0.0.1:3400
+```
 
-  See the examples section for more information.
+See the examples section for more information.
 
 # Examples
 
 ## CLI examples
 
-   Connect to a local server with:
-
-   : ~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --barista http://localhost:3400
+Connect to a local server with:
+	
+```bash	
+~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --barista http://localhost:3400
+```
 
    Connection to labs with:
 
-   : ~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --server http://toaster.lbl.gov:3399 --definition minerva_public_dev
+```bash	
+~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --server http://toaster.lbl.gov:3399 --definition minerva_public_dev
+```
 
    Connect to a local server and dump meta-information to a file using
    CLI:
 
-   : ~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --server http://localhost:3400 --definition minerva_local --command "get_meta(); show(response)" > /tmp/foo.txt
+```bash	
+~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --server http://localhost:3400 --definition minerva_local --command "get_meta(); show(response)" > /tmp/foo.txt
+```
 
    Connect to a local server local and dump meta-information to a file
    using a script:
 
-   : ~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --server http://localhost:3400 --definition minerva_local --file ./scripts/run-script-test.repl.js > /tmp/bar.txt
+```bash	
+~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --server http://localhost:3400 --definition minerva_local --file ./scripts/run-script-test.repl.js > /tmp/bar.txt
+```
 
 ## REPL examples
 
-   Get all of the meta-information for the current instance.
+Get all of the meta-information for the current instance.
 
-   : get_meta()
+```node
+get_meta()
+```
 
-   Assign environment to a known model, then add a couple of new
-   individuals to it.
+Assign environment to a known model, then add a couple of new
+individuals to it.
 
-   : model_id = 'gomodel:taxon_9606-5539842e0000002'
-   : add_individual('GO:0022008')
-   : add_individual(intersection(['GO:0022008', 'GO:0008150']))
+```node
+model_id = 'gomodel:taxon_9606-5539842e0000002'
+add_individual('GO:0022008')
+add_individual(intersection(['GO:0022008', 'GO:0008150']))
+```
 
    Add a new model, which gets the default assignment when done. Then
    add two new individuals as arguments to a new fact.
 
-   : add_model()
-   : var r = new_request_set()
-   : r.add_fact([r.add_individual('GO:0022008'), r.add_individual('GO:0008150'), 'part_of'] )
-   : request_with(r)
+	```node
+   add_model()
+   var r = new_request_set()
+   r.add_fact([r.add_individual('GO:0022008'), r.add_individual('GO:0008150'), 'part_of'] )
+   request_with(r)
+   ```
 
 # API/Objects
 
