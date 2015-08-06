@@ -183,6 +183,7 @@ function _good_response_handler(resp){
 
     // Add the response back into the REPL environment.
     repl_run.context['response'] = resp;
+    response = resp;
 
     // TODO: can we easily extract this still? Probably not, what with
     // all the POST and engine abstractions we have now. OTOH, it's
@@ -305,6 +306,18 @@ function add_model(){
     _request_and_save(manager, request_set);
 }
 
+function save_model(mid){
+    if( ! mid ){
+	mid = _get_current_model_id();
+    }
+
+    // Construct.
+    request_set = new minerva_requests.request_set(token);
+    request_set.store_model(mid);
+
+    _request_and_save(manager, request_set);
+}
+
 function add_individual(cls_expr, ind_id){
     var mid = _get_current_model_id();
     
@@ -386,6 +399,46 @@ function show_models(order_by){
     });
 }
 
+/**
+ * 
+ */
+function show_response(){
+
+    var col = 15;
+
+    // Already have it or not.
+    if( response ){
+	var out = {
+	    'okay': response.okay(),
+	    'user-id': response.user_id(),
+	    'message_type': response.message_type(),
+	    'message': '"' + response.message() + '"',
+	    'signal': response.signal(),
+	    'intention': response.intention(),
+	    'inconsistent': response.inconsistent_p(),
+	    'has_undo': response.has_undo_p(),
+	    'has_redo': response.has_redo_p(),
+	    'facts': response.facts().length,
+	    'individuals': response.individuals().length,
+	    'evidence': response.evidence().length
+	};
+
+	each(out, function(val, key){
+
+	    //
+	    var spacing = col - key.length;
+	    if( spacing <= 0 ){ spacing = 1; }
+
+	    var spaces = '';
+	    each(us.range(spacing), function(){
+		spaces += ' ';
+	    });
+	    console.log(key + spaces + val);
+	});
+
+    }
+}
+    
 ///
 /// Export important things to REPL environment.
 ///
@@ -413,11 +466,13 @@ var export_context =
 	    'get_meta',
 	    'get_model',
 	    'add_model',
+	    'save_model',
 	    'add_individual',
 	    'new_request_set',
 	    'request_with',
 	    // Bigger fun macros.
-	    'show_models'
+	    'show_models',
+	    'show_response'
 	];
 each(export_context, function(symbol){
     eval("repl_run.context['"+symbol+"'] = "+symbol+";");
