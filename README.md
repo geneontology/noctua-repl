@@ -27,8 +27,10 @@
 
   Should then be as simple as:
 
-  : npm install
-  : node ./bin/noctua-repl.js --token=xyz321abc987 --barista http://127.0.0.1:3400
+  ```bash
+  npm install
+  node ./bin/noctua-repl.js --token=xyz321abc987 --barista http://127.0.0.1:3400
+  ```
 
   See the examples section for more information.
 
@@ -100,10 +102,10 @@
 
   Class expressions--package class-expression.
 
-  - 'union'
-  - 'intersection'
-  - 'svf'
-  - 'cls'
+  * 'union'
+  * 'intersection'
+  * 'svf'
+  * 'cls'
 
   Manager actions--these are manager functions mapped up to the top-level.
 
