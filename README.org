@@ -35,31 +35,52 @@
   : npm install
   : node ./bin/noctua-repl.js --token=xyz321abc987 --barista http://127.0.0.1:3400
 
+  See the examples section for more information.
+
 * Examples
 
-  Get all of the meta-information for the current instance.
+** CLI examples
 
-  : get_meta()
+   Connect to a local server with:
 
-  Assign environment to a known model, then add a couple of new
-  individuals to it.
+   : ~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --barista http://localhost:3400
 
-  : model_id = 'gomodel:taxon_9606-5539842e0000002'
-  : add_individual('GO:0022008')
-  : add_individual(intersection(['GO:0022008', 'GO:0008150']))
+   Connection to labs with:
 
-  Add a new model, which gets the default assignment when done. Then
-  add two new individuals as arguments to a new fact.
+   : ~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --server http://toaster.lbl.gov:3399 --definition minerva_public_dev
 
-  : add_model()
-  : var r = new_request_set()
-  : r.add_fact([r.add_individual('GO:0022008'), r.add_individual('GO:0008150'), 'part_of'] )
-  : request_with(r)
+   Connect to a local server and dump meta-information to a file using
+   CLI:
+
+   : ~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --server http://localhost:3400 --definition minerva_local --command "get_meta(); show(response)" > /tmp/foo.txt
+
+   Connect to a local server local and dump meta-information to a file
+   using a script:
+
+   : ~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --server http://localhost:3400 --definition minerva_local --file ./scripts/run-script-test.repl.js > /tmp/bar.txt
+
+** REPL examples
+
+   Get all of the meta-information for the current instance.
+
+   : get_meta()
+
+   Assign environment to a known model, then add a couple of new
+   individuals to it.
+
+   : model_id = 'gomodel:taxon_9606-5539842e0000002'
+   : add_individual('GO:0022008')
+   : add_individual(intersection(['GO:0022008', 'GO:0008150']))
+
+   Add a new model, which gets the default assignment when done. Then
+   add two new individuals as arguments to a new fact.
+
+   : add_model()
+   : var r = new_request_set()
+   : r.add_fact([r.add_individual('GO:0022008'), r.add_individual('GO:0008150'), 'part_of'] )
+   : request_with(r)
 
 * Limitations/TODOs
 
-  While the full API is available, there could be some better memory
-  of actions so one is not always looking up the last individual IDs.
-
-  Also, it is still asynchronous, so you need to wait until it has
-  completed if you want to run the next in a series of commands.
+  We're actually feeling pretty good about this right now. Let us
+  know.
