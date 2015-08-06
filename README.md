@@ -1,20 +1,21 @@
-= Overview =
+# Overview
 
-  This is a REPL environment for the [[https://github.com/geneontology/noctua][Noctua]] annotation tool. This gets
-  you some nice things:
+  This is a REPL environment for the
+  [Noctua](https://github.com/geneontology/noctua) annotation
+  tool. This gets you some nice things:
 
-  1) You don't have to wait until UI functionality makes it into the
-     graph (or some other) editor--if the low-level API is capable of
-     expressing it, you can easily do it in the REPL.
+	1. You don't have to wait until UI functionality makes it into the
+       graph (or some other) editor--if the low-level API is capable of
+	   expressing it, you can easily do it in the REPL.
    
-  2) For some operations, it is easier to express them succinctly with
-     commands rather than work with a UI.
+	2. For some operations, it is easier to express them succinctly with
+       commands rather than work with a UI.
 
-  3) An extremely easy way of prototyping new functionality.
+	3. An extremely easy way of prototyping new functionality.
 
-  4) Spooky action at a distance.
+	4. Spooky action at a distance.
 
-= Usage =
+# Usage
 
   Given that you have logged in to a Noctua instance, look at the URL
   and copy your token (the variable is "barista_token").
@@ -34,9 +35,9 @@
 
   See the examples section for more information.
 
-= Examples =
+# Examples
 
-== CLI examples ==
+## CLI examples
 
    Connect to a local server with:
 
@@ -56,7 +57,7 @@
 
    : ~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --server http://localhost:3400 --definition minerva_local --file ./scripts/run-script-test.repl.js > /tmp/bar.txt
 
-== REPL examples ==
+## REPL examples
 
    Get all of the meta-information for the current instance.
 
@@ -77,7 +78,7 @@
    : r.add_fact([r.add_individual('GO:0022008'), r.add_individual('GO:0008150'), 'part_of'] )
    : request_with(r)
 
-= API/Objects =
+# API/Objects
 
   This is a list of symbols that are defined or used in the
   REPL/scripting environment beyond what comes with node. Remember
@@ -122,7 +123,7 @@
   - 'show_models'
   - 'show_response'
 
-= Limitations/TODOs =
+# Limitations/TODOs
 
   We're actually feeling pretty good about this right now. Let us
   know.
