@@ -80,6 +80,51 @@
    : r.add_fact([r.add_individual('GO:0022008'), r.add_individual('GO:0008150'), 'part_of'] )
    : request_with(r)
 
+* API/Objects
+
+  This is a list of symbols that are defined or used in the
+  REPL/scripting environment beyond what comes with node. Remember
+  that you can do any of the normal things that you might want in this
+  environment--it's just node!
+
+  Helpers.
+
+  - 'bbop' the bbop-core package
+  - 'us' underscore
+  - 'manager' the bbop-rest-manager with bbop-reponse-minerva
+  - 'show' function to display objects more intelligently
+
+  Auto-variables--these are attempted to be sent after every call.
+
+  - 'token'
+  - 'model'
+  - 'model_id'
+  - 'request_set'
+  - 'response'
+  - 'query_url'
+
+  Class expressions--package class-expression.
+
+  - 'union'
+  - 'intersection'
+  - 'svf'
+  - 'cls'
+
+  Manager actions--these are manager functions mapped up to the top-level.
+
+  - 'get_meta'
+  - 'get_model'
+  - 'add_model'
+  - 'save_model'
+  - 'add_individual'
+  - 'new_request_set'
+  - 'request_with'
+
+  Bigger fun macros.
+
+  - 'show_models'
+  - 'show_response'
+
 * Limitations/TODOs
 
   We're actually feeling pretty good about this right now. Let us
