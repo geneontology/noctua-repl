@@ -1,11 +1,7 @@
 ////
 //// REPL environment for Noctua.
 ////
-//// Currently testing with:
-////  : ~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --barista http://localhost:3400
-////
-//// Connection to labs with:
-////  : ~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --server http://toaster.lbl.gov:3399 --definition minerva_public_dev
+//// See README.org for more information.
 ////
 
 // Util.
@@ -76,15 +72,23 @@ if( ! barista_definition || what_is(barista_definition) !== 'string' ){
     console.log('Using Barista definition: ' + barista_definition);
 }
 
+// The idea here is to be able to run a single command (line of
+// javascript).
+var command = argv['c'] || argv['command'] || null;
+if( ! command || what_is(command) !== 'string' ){
+    // Is optional; pass.
+}else{
+    console.log('Run command: ' + command);
+}
+
 // The idea here is to be able to run a set of commands in the
-// environment in batch. Unlikely to happen until we can enforce a
-// synchronous client.
+// environment in batch.
 // TODO: (optional) file
 var file = argv['f'] || argv['file'];
 if( ! file || what_is(file) !== 'string' ){
     // Is optional; pass.
 }else{
-    console.log('[TODO] Run file: ' + file);
+    console.log('Run file: ' + file);
 }
 
 ///
@@ -211,7 +215,7 @@ manager.register('prerun', function(){
 
 // "postrun" callback.
 manager.register('postrun', function(){
-    console.log('Completed.');
+    //console.log('Completed.');
 });
 
 // "manager_error" callback.
@@ -353,14 +357,17 @@ function show_models(order_by){
     SILENT = false;
     
     // Data capture step.
-    var models_meta = meta_resp.models_meta();
     var cache = [];
+    var models_meta = meta_resp.models_meta();
     each(models_meta, function(meta, mid){
 	var title = '<no title>';
 	var date = '????-??-??';
-	var deprecated = '';
+	var contributor = '???';
+	var modified_p = ' ';
+	var deprecated = ' ';
 	if( meta && meta['title'] ){ title = meta['title']; }
 	if( meta && meta['date'] ){ date = meta['date']; }
+	if( meta && meta['contributor'] ){ contributor = meta['contributor']; }
 	if( meta && meta['deprecated'] && meta['deprecated'] === "true" ){
 	    deprecated = '-';
 	}
@@ -368,9 +375,24 @@ function show_models(order_by){
 	cache.push({
 	    'id': mid,
 	    'date': date,
+	    'modified-p': modified_p,
 	    'deprecated': deprecated,
+	    'contributor': contributor,
 	    'title': title
 	});
+    });
+
+    // Now get the information from the "read-only" stream.
+    var models_meta_ro = meta_resp.models_meta_read_only();
+    each(cache, function(item){
+	var mid = item['id'];
+	if( models_meta_ro && models_meta_ro[mid] ){
+	    if( models_meta_ro[mid]['modified-p'] ){
+		//item['modified-p'] = models_meta_ro['id']['modified-p'];
+		console.log('add mod 4 ' + mid);
+		item['modified-p'] = '*';
+	    }
+	}
     });
 
     // Optional sorting step.
@@ -391,9 +413,12 @@ function show_models(order_by){
     // Display the info nicely.
     each(cache, function(item){
 	console.log([
+	    //item['id'] + ' ' + item['date'] + ' ' + item['modified'] + ' ' + item['deprecated'],
 	    item['id'],
-	    item['deprecated'],
 	    item['date'],
+	    item['modified-p'],
+	    item['deprecated'],
+	    item['contributor'],
 	    item['title'],
 	].join("\t"));
     });
@@ -415,6 +440,7 @@ function show_response(){
 	    'message': '"' + response.message() + '"',
 	    'signal': response.signal(),
 	    'intention': response.intention(),
+	    'modified': response.modified_p(),
 	    'inconsistent': response.inconsistent_p(),
 	    'has_undo': response.has_undo_p(),
 	    'has_redo': response.has_redo_p(),
@@ -477,6 +503,37 @@ var export_context =
 each(export_context, function(symbol){
     eval("repl_run.context['"+symbol+"'] = "+symbol+";");
 });
+
+///
+/// Run command or file in our environment.
+///
+
+if( command ){
+
+    // Run command.
+    console.log('');
+    //console.log('command: ', command);
+    eval(command + ";");
+
+    // Exit.
+    process.exit(0);
+}
+
+if( file ){
+
+    fs.readFile(file, function (err, data) {
+	if(err){ throw err; }
+	
+	//console.log(data);
+
+	// Run file.
+	//console.log()
+	eval(data.toString());
+	
+	// Exit.
+	process.exit(0);
+    });
+}
 
 ///
 /// REPL examples as we move forward with testing.
