@@ -1,48 +1,48 @@
 {
     "name": "noctua-repl",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "license": "BSD-3-Clause",
     "description": "Interactive programming interface for Noctua (Barista->Minerva).",
     "keywords": [
-	"application",
-	"gene ontology",
-	"GO",
-	"REPL",
-	"bbop",
-	"bbopx",
-	"pup-tent",
-	"noctua",
-	"barista"
+        "application",
+        "gene ontology",
+        "GO",
+        "REPL",
+        "bbop",
+        "bbopx",
+        "pup-tent",
+        "noctua",
+        "barista"
     ],
     "author": {
-	"name": "SJC",
-	"email": "sjcarbon@lbl.gov",
-	"url": "http://berkeleybop.org/"
+        "name": "SJC",
+        "email": "sjcarbon@lbl.gov",
+        "url": "http://berkeleybop.org/"
     },
     "homepage": "http://berkeleybop.org/",
     "repository": {
-	"type": "git",
-	"url": "https://github.com/geneontology/noctua-repl"
+        "type": "git",
+        "url": "https://github.com/geneontology/noctua-repl"
     },
     "engines": {
-	"node": ">= 0.12.2",
-	"npm": ">= 2.7.4"
+        "node": ">= 0.12.2",
+        "npm": ">= 2.7.4"
     },
     "bin": {
-	"noctua-repl": "./bin/noctua-repl.js"
+        "noctua-repl": "./bin/noctua-repl.js"
     },
     "dependencies": {
         "bbop-core": "0.0.4",
-	"bbopx": "~0.9.31",
-	"bbop-graph-noctua": "0.0.18",
-	"bbop-manager-minerva": "0.0.2",
-	"bbop-rest-manager": "0.0.6",
-	"bbop-response-barista": "0.0.4",
-	"class-expression": "~0.0.7",
+        "bbopx": "~0.9.31",
+        "bbop-graph-noctua": "0.0.18",
+        "bbop-manager-minerva": "0.0.2",
+        "bbop-rest-manager": "0.0.6",
+        "bbop-response-barista": "0.0.4",
+        "class-expression": "~0.0.7",
         "minerva-requests": "0.0.4",
-	"minimist": "~1.1.1",
-	"sync-request": "2.0.1",
-	"underscore": "~1.8.3"
+        "minimist": "~1.1.1",
+        "sync-request": "2.0.1",
+        "underscore": "~1.8.3"
     },
     "devDependencies": {
         "chai": "^2.3.0",
