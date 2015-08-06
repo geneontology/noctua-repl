@@ -93,7 +93,7 @@ REPL/scripting environment beyond what comes with node. Remember that
 you can do any of the normal things that you might want in this
 environment--it's just node!
 
-## Helpers
+Helpers.
 
 - 'bbop' the bbop-core package
 - 'us' underscore
@@ -109,7 +109,7 @@ Auto-variables--these are attempted to be sent after every call.
 - 'response'
 - 'query_url'
 
-## Class expressions--package class-expression.
+Class expressions--package class-expression.
 
 * 'union'
 * 'intersection'
