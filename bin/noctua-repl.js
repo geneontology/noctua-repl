@@ -364,10 +364,12 @@ function show_models(order_by){
 	var date = '????-??-??';
 	var contributor = '???';
 	var modified_p = ' ';
+	var model_state = '?';
 	var deprecated = ' ';
 	if( meta && meta['title'] ){ title = meta['title']; }
 	if( meta && meta['date'] ){ date = meta['date']; }
 	if( meta && meta['contributor'] ){ contributor = meta['contributor']; }
+	if( meta && meta['model-state'] ){ model_state = meta['model-state']; }
 	if( meta && meta['deprecated'] && meta['deprecated'] === "true" ){
 	    deprecated = '-';
 	}
@@ -376,6 +378,7 @@ function show_models(order_by){
 	    'id': mid,
 	    'date': date,
 	    'modified-p': modified_p,
+	    'model-state': model_state,
 	    'deprecated': deprecated,
 	    'contributor': contributor,
 	    'title': title
@@ -417,6 +420,7 @@ function show_models(order_by){
 	    item['id'],
 	    item['date'],
 	    item['modified-p'],
+	    item['model-state'],
 	    item['deprecated'],
 	    item['contributor'],
 	    item['title'],

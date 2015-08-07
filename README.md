@@ -128,7 +128,7 @@ Manager actions--these are manager functions mapped up to the top-level.
 
 Bigger fun function macros.
 
-- 'show_models' show summary information for all current models; can take a single string argument of "id", "title", "deprecated", "modified-p", "contributor", or "date" for sorting
+- 'show_models' show summary information for all current models; can take a single string argument of "id", "title", "deprecated", "modified-p", "contributor", "model-state", or "date" for sorting
 - 'show_response'
 
 # Limitations/TODOs
