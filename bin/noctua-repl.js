@@ -392,7 +392,7 @@ function show_models(order_by){
 	if( models_meta_ro && models_meta_ro[mid] ){
 	    if( models_meta_ro[mid]['modified-p'] ){
 		//item['modified-p'] = models_meta_ro['id']['modified-p'];
-		console.log('add mod 4 ' + mid);
+		//console.log('add mod 4 ' + mid);
 		item['modified-p'] = '*';
 	    }
 	}
