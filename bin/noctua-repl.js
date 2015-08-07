@@ -363,8 +363,8 @@ function show_models(order_by){
 	var title = '<no title>';
 	var date = '????-??-??';
 	var contributor = '???';
+	var model_state = '???';
 	var modified_p = ' ';
-	var model_state = '?';
 	var deprecated = ' ';
 	if( meta && meta['title'] ){ title = meta['title']; }
 	if( meta && meta['date'] ){ date = meta['date']; }
