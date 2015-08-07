@@ -444,7 +444,7 @@ function show_response(){
 	    'message': '"' + response.message() + '"',
 	    'signal': response.signal(),
 	    'intention': response.intention(),
-	    'modified': response.modified_p(),
+	    'modified-p': response.modified_p(),
 	    'inconsistent': response.inconsistent_p(),
 	    'has_undo': response.has_undo_p(),
 	    'has_redo': response.has_redo_p(),
