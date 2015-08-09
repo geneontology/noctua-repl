@@ -346,15 +346,23 @@ function request_with(req_set){
     _request_and_save(manager, req_set);
 }
 
+function silent(bool){
+    if( bool && bool === true ){
+	SILENT = true;
+    }else{
+	SILENT = false;
+    }
+}
+
 /**
  * 
  */
 function show_models(order_by){
 
     // Quietly get the meta information.
-    SILENT = true;
+    silent(true);
     var meta_resp = manager.get_meta();
-    SILENT = false;
+    silent(false);
     
     // Data capture step.
     var cache = [];
@@ -502,7 +510,8 @@ var export_context =
 	    'request_with',
 	    // Bigger fun macros.
 	    'show_models',
-	    'show_response'
+	    'show_response',
+	    'silent'
 	];
 each(export_context, function(symbol){
     eval("repl_run.context['"+symbol+"'] = "+symbol+";");
@@ -555,7 +564,7 @@ if( file ){
 // request_with(r)
 
 // get_model('gomodel:taxon_559292-5525a0fc0000001_all_indivdual')
-// request_with(new_request_set().add_annotation_to_fact('comment', 'foo', ['gomodel:taxon_559292-5525a0fc0000001-GO-0005515-5525a0fc0000023','gomodel:taxon_559292-5525a0fc0000001-GO-0005095-5525a0fc0000009','RO:0002408']));
+// request_with(new_request_set().add_annotation_to_fact('comment', 'foo', null, ['gomodel:taxon_559292-5525a0fc0000001-GO-0005515-5525a0fc0000023','gomodel:taxon_559292-5525a0fc0000001-GO-0005095-5525a0fc0000009','RO:0002408']));
 
 // get_model('gomodel:taxon_559292-5525a0fc0000001_all_indivdual')
 // request_with(new_request_set().add_evidence('ECO:0000034', 'NEMO:0000001', ['gomodel:taxon_559292-5525a0fc0000001-GO-0005095-5525a0fc0000009','gomodel_taxon_559292-5525a0fc0000001-SGD-S000003814-553ff9ed0000002','RO:0002333']));

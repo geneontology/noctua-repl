@@ -130,6 +130,7 @@ Bigger fun function macros.
 
 - 'show_models' show summary information for all current models; can take a single string argument of "id", "title", "deprecated", "modified-p", "contributor", "model-state", or "date" for sorting
 - 'show_response'
+- 'silent' supress/re-enable the display of action results
 
 # Limitations/TODOs
 
