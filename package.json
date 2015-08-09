@@ -32,14 +32,13 @@
         "noctua-repl": "./bin/noctua-repl.js"
     },
     "dependencies": {
-        "bbop-core": "0.0.4",
-        "bbopx": "~0.9.31",
+        "bbop-core": "0.0.5",
         "bbop-graph-noctua": "0.0.18",
-        "bbop-manager-minerva": "0.0.2",
+        "bbop-manager-minerva": "0.0.3",
         "bbop-rest-manager": "0.0.6",
-        "bbop-response-barista": "0.0.4",
-        "class-expression": "~0.0.7",
-        "minerva-requests": "0.0.4",
+        "bbop-response-barista": "0.0.5",
+        "class-expression": "~0.0.8",
+        "minerva-requests": "0.0.5",
         "minimist": "~1.1.1",
         "sync-request": "2.0.1",
         "underscore": "~1.8.3"
