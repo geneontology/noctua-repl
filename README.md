@@ -24,7 +24,7 @@ Should then be as simple as:
 
 ```bash
 npm install
-node ./bin/noctua-repl.js --token=xyz321abc987 --barista http://127.0.0.1:3400
+node ./bin/noctua-repl.js --token=xyz321abc987 --server http://127.0.0.1:3400
 ```
 
 See the examples section for more information.
@@ -36,7 +36,7 @@ See the examples section for more information.
 Connect to a local server with:
 	
 ```bash	
-~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --barista http://localhost:3400
+~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --server http://localhost:3400
 ```
 
 Connection to labs with:
