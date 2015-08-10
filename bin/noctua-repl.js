@@ -1,7 +1,7 @@
 ////
 //// REPL environment for Noctua.
 ////
-//// See README.org for more information.
+//// See README.md for more information.
 ////
 
 // Util.
@@ -367,33 +367,56 @@ function show_models(order_by){
     // Data capture step.
     var cache = [];
     var models_meta = meta_resp.models_meta();
-    each(models_meta, function(meta, mid){
+    each(models_meta, function(annotations, mid){
+	
+	// Collect and bin all the annotations.
+	var key_to_value_list = {};
+	each(annotations, function(ann){
+	    var k = ann['key'];
+	    // Ensure list.
+	    if( typeof(key_to_value_list[k]) === 'undefined' ){
+		key_to_value_list[k] = [];
+	    }
+	    key_to_value_list[k].push(ann['value']);
+	});
+
+	// Create the final (sortable) strings.
+	// Annotations we care about.
 	var title = '<no title>';
 	var date = '????-??-??';
 	var contributor = '???';
-	var model_state = '???';
+	var state = '???';
 	var modified_p = ' ';
 	var deprecated = ' ';
-	if( meta && meta['title'] ){ title = meta['title']; }
-	if( meta && meta['date'] ){ date = meta['date']; }
-	if( meta && meta['contributor'] ){ contributor = meta['contributor']; }
-	if( meta && meta['model-state'] ){ model_state = meta['model-state']; }
-	if( meta && meta['deprecated'] && meta['deprecated'] === "true" ){
-	    deprecated = '-';
+	if( key_to_value_list['title'] ){
+	    title = key_to_value_list['title'].join("|");
+	}
+	if( key_to_value_list['date'] ){
+	    date = key_to_value_list['date'].join("|");
+	}
+	if( key_to_value_list['contributor'] ){
+	    contributor = key_to_value_list['contributor'].join("|");
+	}
+	if( key_to_value_list['state'] ){
+	    state = key_to_value_list['state'].join("|");
+	}
+	if( key_to_value_list['deprecated'] ){
+	    deprecated = key_to_value_list['deprecated'].join("|");
 	}
 
 	cache.push({
 	    'id': mid,
 	    'date': date,
 	    'modified-p': modified_p,
-	    'model-state': model_state,
+	    'state': state,
 	    'deprecated': deprecated,
 	    'contributor': contributor,
 	    'title': title
 	});
     });
 
-    // Now get the information from the "read-only" stream.
+    // Now get the information from the "read-only" stream of
+    // key/values.
     var models_meta_ro = meta_resp.models_meta_read_only();
     each(cache, function(item){
 	var mid = item['id'];
@@ -428,7 +451,7 @@ function show_models(order_by){
 	    item['id'],
 	    item['date'],
 	    item['modified-p'],
-	    item['model-state'],
+	    item['state'],
 	    item['deprecated'],
 	    item['contributor'],
 	    item['title'],
