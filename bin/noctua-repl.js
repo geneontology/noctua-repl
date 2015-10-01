@@ -506,6 +506,8 @@ function show_response(){
 
 var export_context =
 	[
+	    // Script environment.
+	    'argv',
 	    // Helpers.
 	    'bbop',
 	    'us',
