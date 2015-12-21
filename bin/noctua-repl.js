@@ -202,6 +202,10 @@ function _bad_response_handler(type, resp, man){
     console.error('\n');
     console.error('There was a '+ type + ' (' +
 		  resp.message_type() + '): ' + resp.message());
+    // Sometimes we get more information.
+    if( resp.commentary() ){
+	console.error(resp.commentary());
+    }
     console.error('\n');
 
     // If the response id defined, assign it back into the REPL.
