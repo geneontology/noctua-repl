@@ -15,9 +15,12 @@ var class_expression = require('class-expression');
 var minerva_requests = require('minerva-requests');
 var noctua_model = require('bbop-graph-noctua');
 
-//
+// Minerva (model affecting) communication.
 var sync_engine = require('bbop-rest-manager').sync_request;
 var minerva_manager = require('bbop-manager-minerva');
+
+// Barista (telekinesis, etc.) communication.
+var barista_client = require('bbop-client-barista');
 
 // var anchor = this;
 
@@ -135,6 +138,11 @@ function _get_current_model_id(){
     return mid;
 }
 
+function _get_current_model(){
+    var m = repl_run.context['model'] || model;
+    return m;
+}
+
 // Make the request and save the interesting products.
 function _request_and_save(manager, request_set){
 
@@ -145,8 +153,11 @@ function _request_and_save(manager, request_set){
     repl_run.context['request_set'] = request_set;
 }
 
+///
+/// Add Minerva manager and default callbacks to repl.
+///
 
-// Add manager and default callbacks to repl.
+// 
 var engine = new sync_engine(barista_response);
 var manager = new minerva_manager(barista_server, barista_definition,
 				  token, engine, 'sync');
@@ -253,6 +264,13 @@ manager.register('rebuild', function(resp, man){
 });
 
 ///
+/// Add Barista manager and default callbacks to repl.
+///
+
+var barclient = new barista_client(barista_server, token);
+
+
+///
 /// Activites.
 ///
 
@@ -332,6 +350,19 @@ function add_individual(cls_expr, ind_id){
     // Construct.
     request_set = new minerva_requests.request_set(token, mid);
     request_set.add_individual(cls_expr, ind_id);
+
+    _request_and_save(manager, request_set);
+}
+
+function move_individual(ind_id, x, y){
+    var mid = _get_current_model_id();
+    var m = _get_current_model();
+    
+    // Construct.
+    request_set = new minerva_requests.request_set(token, mid);
+
+    request_set.update_annotations(m, 'hint-layout-x', x);
+    request_set.update_annotations(m, 'hint-layout-y', y);
 
     _request_and_save(manager, request_set);
 }
@@ -517,6 +548,7 @@ var export_context =
 	    'us',
 	    'manager',
 	    'show',
+	    'barclient',
 	    // Auto-variables
 	    'token',
 	    'model',
@@ -540,7 +572,9 @@ var export_context =
 	    // Bigger fun macros.
 	    'show_models',
 	    'show_response',
-	    'silent'
+	    'silent',
+	    // Model macros.
+	    'move_individual'
 	];
 each(export_context, function(symbol){
     eval("repl_run.context['"+symbol+"'] = "+symbol+";");
@@ -618,3 +652,13 @@ if( file ){
 //     }
 // }
 // repl_run.context['incr'] = incr;
+
+///
+// get_model('gomodel:5667fdd400000077')
+// model.get_node('gomodel:5667fdd400000077/5667fdd400000347')
+// move_individual('gomodel:5667fdd400000077/5667fdd400000347', 100.0, 100.0)
+//
+
+/// Barely using barclient and telekinesis; gets very chatty.
+// barclient.connect('gomodel:567b544200000029')
+// barclient.telekinesis('gomodel:567b544200000029/567b544200000126', 100, 100)
