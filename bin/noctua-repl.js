@@ -423,6 +423,7 @@ function show_models(order_by){
 	var state = '???';
 	var modified_p = ' ';
 	var deprecated = ' ';
+	var template = ' ';
 	if( key_to_value_list['title'] ){
 	    title = key_to_value_list['title'].join("|");
 	}
@@ -435,6 +436,9 @@ function show_models(order_by){
 	if( key_to_value_list['state'] ){
 	    state = key_to_value_list['state'].join("|");
 	}
+	if( key_to_value_list['template'] ){
+	    template = key_to_value_list['template'].join("|");
+	}
 	if( key_to_value_list['deprecated'] ){
 	    deprecated = key_to_value_list['deprecated'].join("|");
 	}
@@ -444,6 +448,7 @@ function show_models(order_by){
 	    'date': date,
 	    'modified-p': modified_p,
 	    'state': state,
+	    'template': template,
 	    'deprecated': deprecated,
 	    'contributor': contributor,
 	    'title': title
@@ -487,6 +492,7 @@ function show_models(order_by){
 	    item['date'],
 	    item['modified-p'],
 	    item['state'],
+	    item['template'],
 	    item['deprecated'],
 	    item['contributor'],
 	    item['title'],
