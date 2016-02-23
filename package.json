@@ -1,6 +1,6 @@
 {
     "name": "noctua-repl",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "license": "BSD-3-Clause",
     "description": "Interactive programming interface for Noctua (Barista->Minerva).",
     "keywords": [
@@ -42,10 +42,10 @@
         "bbop-response-barista": "0.0.8",
         "bbop-response-golr": "0.0.5",
         "class-expression": "0.0.11",
-	"golr-conf": "0.0.3", 
+        "golr-conf": "0.0.3",
         "minerva-requests": "0.0.8",
         "minimist": "~1.1.1",
-	"socket.io": "0.9.16",
+        "socket.io": "0.9.16",
         "sync-request": "2.0.1",
         "underscore": "~1.8.3"
     },
