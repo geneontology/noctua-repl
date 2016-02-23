@@ -10,6 +10,61 @@ var fs = require('fs');
 var us = require('underscore');
 var repl = require('repl');
 
+//
+// Tried to use https://github.com/tmpvar/repl.history, but it failed
+// What follows has been adapted from https://github.com/tmpvar/repl.history
+//
+//  Suggested improvements that should be done:
+//    Write the history out after each 'line', rather than waiting for exit. That way, a crash
+//    won't lose the history that produced it.
+//
+var repl_history = function (repl, file) {  // for some reason, require('repl_history') doesn't work here.
+  try {
+    var stat = fs.statSync(file);
+    var fileContents = fs.readFileSync(file, 'utf-8') + '';
+
+    repl.rli.history = fileContents.split('\n').reverse();
+    repl.rli.history.shift();
+    var historyIndex = -1;
+    repl.rli.historyIndex = historyIndex; // -1; // will be incremented before pop
+  }
+  catch (e) {
+  }
+
+  var fd = fs.openSync(file, 'a');
+  var reval = repl.eval;
+
+  repl.rli.addListener('line', function(code) {
+    if (code === '.history') {
+      // console.log('HISTORY');
+    }
+    else if (code.length > 0) {
+      // console.log('WRITE');
+      fs.write(fd, code + '\n');
+    }
+    else {
+      // console.log('ELSE');
+    }
+  });
+
+  process.on('exit', function() {
+    fs.closeSync(fd);
+  });
+
+  repl.commands['history'] = {
+    help : 'Show the history',
+    action : function() {
+      var out = [];
+      repl.rli.history.forEach(function(v, k) {
+        out.push(v);
+      });
+      repl.outputStream.write(out.reverse().join('\n') + '\n');
+      repl.displayPrompt();
+    }
+  };
+};
+
+
 var barista_response = require('bbop-response-barista');
 var class_expression = require('class-expression');
 var minerva_requests = require('minerva-requests');
@@ -94,23 +149,6 @@ if( ! file || what_is(file) !== 'string' ){
     console.log('Run file: ' + file);
 }
 
-///
-/// Spin up REPL and create running environment.
-///
-
-// Start repl.
-var repl_run = repl.start({
-    'prompt': 'noctua-repl@' + barista_server + '|' + barista_definition + '> ',
-    'input': process.stdin,
-    'output': process.stdout,
-    'useGlobal': true//,
-    // // Try and keep everything in this scope.
-    // 'eval': function(cmd, context, filename, callback){
-    //     console.log(cmd);    
-    //     callback(null, result);
-    // }
-});
-
 // Okay, this is a little hard to explain. It seems to be quite hard
 // to get this context to stay in sync with the REPLs running one once
 // it "forks". It seems like it somehow initially "copies" this
@@ -157,7 +195,7 @@ function _request_and_save(manager, request_set){
 /// Add Minerva manager and default callbacks to repl.
 ///
 
-// 
+//
 var engine = new sync_engine(barista_response);
 var manager = new minerva_manager(barista_server, barista_definition,
 				  token, engine, 'sync');
@@ -172,7 +210,7 @@ function _good_response_handler(resp){
 
     // "Display" the returning data.
     show(resp.data());
-    
+
     // Extract any model ID and assign it to the environment as the
     // default--probably only useful when a model is being created and
     // we want to add stuff on.
@@ -269,7 +307,6 @@ manager.register('rebuild', function(resp, man){
 
 var barclient = new barista_client(barista_server, token);
 
-
 ///
 /// Activites.
 ///
@@ -322,7 +359,7 @@ function get_model(mid){
     _request_and_save(manager, request_set);
 }
 
-// 
+//
 function add_model(){
 
     // Construct.
@@ -346,7 +383,7 @@ function save_model(mid){
 
 function add_individual(cls_expr, ind_id){
     var mid = _get_current_model_id();
-    
+
     // Construct.
     request_set = new minerva_requests.request_set(token, mid);
     request_set.add_individual(cls_expr, ind_id);
@@ -357,7 +394,7 @@ function add_individual(cls_expr, ind_id){
 function move_individual(ind_id, x, y){
     var mid = _get_current_model_id();
     var m = _get_current_model();
-    
+
     // Construct.
     request_set = new minerva_requests.request_set(token, mid);
 
@@ -390,7 +427,7 @@ function silent(bool){
 }
 
 /**
- * 
+ *
  */
 function show_models(order_by){
 
@@ -398,12 +435,12 @@ function show_models(order_by){
     silent(true);
     var meta_resp = manager.get_meta();
     silent(false);
-    
+
     // Data capture step.
     var cache = [];
     var models_meta = meta_resp.models_meta();
     each(models_meta, function(annotations, mid){
-	
+
 	// Collect and bin all the annotations.
 	var key_to_value_list = {};
 	each(annotations, function(ann){
@@ -480,7 +517,7 @@ function show_models(order_by){
 		return 0;
 	    }else{
 		return -1;
-	    }	
+	    }
 	});
     }
 
@@ -501,7 +538,7 @@ function show_models(order_by){
 }
 
 /**
- * 
+ *
  */
 function show_response(){
 
@@ -540,7 +577,28 @@ function show_response(){
 
     }
 }
-    
+
+
+///
+/// Spin up REPL and create running environment.
+///
+
+// Start repl.
+var repl_run = repl.start({
+    'prompt': 'noctua-repl@' + barista_server + '|' + barista_definition + '> ',
+    'input': process.stdin,
+    'output': process.stdout,
+    'useGlobal': true//,
+    // // Try and keep everything in this scope.
+    // 'eval': function(cmd, context, filename, callback){
+    //     console.log(cmd);    
+    //     callback(null, result);
+    // }
+});
+
+repl_history(repl_run, process.env.HOME + '/.noctua_repl_history');
+
+
 ///
 /// Export important things to REPL environment.
 ///
@@ -605,13 +663,13 @@ if( file ){
 
     fs.readFile(file, function (err, data) {
 	if(err){ throw err; }
-	
+
 	//console.log(data);
 
 	// Run file.
 	//console.log()
 	eval(data.toString());
-	
+
 	// Exit.
 	process.exit(0);
     });
