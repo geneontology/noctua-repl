@@ -27,8 +27,8 @@ var repl_history = function (repl, file) {  // for some reason, require('repl_hi
     repl.rli.history.shift();
     var historyIndex = -1;
     repl.rli.historyIndex = historyIndex; // -1; // will be incremented before pop
-  }
-  catch (e) {
+  } catch (e) {
+      // Pass.
   }
 
   var fd = fs.openSync(file, 'a');
@@ -64,7 +64,6 @@ var repl_history = function (repl, file) {  // for some reason, require('repl_hi
   };
 };
 
-
 var barista_response = require('bbop-response-barista');
 var class_expression = require('class-expression');
 var minerva_requests = require('minerva-requests');
@@ -76,8 +75,6 @@ var minerva_manager = require('bbop-manager-minerva');
 
 // Barista (telekinesis, etc.) communication.
 var barista_client = require('bbop-client-barista');
-
-// var anchor = this;
 
 ///
 /// Helpers
@@ -184,11 +181,11 @@ function _get_current_model(){
 // Make the request and save the interesting products.
 function _request_and_save(manager, request_set){
 
-    // Request, let the synxchonous callbacks deal with with happens.
-    manager.request_with(request_set);
-
     // Capture the incoming request.
     repl_run.context['request_set'] = request_set;
+
+    // Request, let the synchonous callbacks deal with with happens.
+    return manager.request_with(request_set);
 }
 
 ///
@@ -343,7 +340,7 @@ function get_meta(){
     request_set = new minerva_requests.request_set(token);
     request_set.get_meta();
 
-    _request_and_save(manager, request_set);
+    return _request_and_save(manager, request_set);
 }
 
 // Can be used to switch models, as well as view the current one.
@@ -356,7 +353,7 @@ function get_model(mid){
     request_set = new minerva_requests.request_set(token);
     request_set.get_model(mid);
 
-    _request_and_save(manager, request_set);
+    return _request_and_save(manager, request_set);
 }
 
 //
@@ -366,7 +363,7 @@ function add_model(){
     request_set = new minerva_requests.request_set(token);
     request_set.add_model();
 
-    _request_and_save(manager, request_set);
+    return _request_and_save(manager, request_set);
 }
 
 function save_model(mid){
@@ -378,7 +375,7 @@ function save_model(mid){
     request_set = new minerva_requests.request_set(token);
     request_set.store_model(mid);
 
-    _request_and_save(manager, request_set);
+    return _request_and_save(manager, request_set);
 }
 
 function add_individual(cls_expr, ind_id){
@@ -388,7 +385,7 @@ function add_individual(cls_expr, ind_id){
     request_set = new minerva_requests.request_set(token, mid);
     request_set.add_individual(cls_expr, ind_id);
 
-    _request_and_save(manager, request_set);
+    return _request_and_save(manager, request_set);
 }
 
 function move_individual(ind_id, x, y){
@@ -401,7 +398,7 @@ function move_individual(ind_id, x, y){
     request_set.update_annotations(m, 'hint-layout-x', x);
     request_set.update_annotations(m, 'hint-layout-y', y);
 
-    _request_and_save(manager, request_set);
+    return _request_and_save(manager, request_set);
 }
 
 /** Create a custom request set from the current environment. */
@@ -415,7 +412,7 @@ function new_request_set(){
 
 /** Add a custom request set; probably necessary for linking. */
 function request_with(req_set){
-    _request_and_save(manager, req_set);
+    return _request_and_save(manager, req_set);
 }
 
 function silent(bool){
