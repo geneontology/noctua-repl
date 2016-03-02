@@ -303,6 +303,7 @@ manager.register('rebuild', function(resp, man){
 ///
 
 var barclient = new barista_client(barista_server, token);
+barclient.logger(false); // turn off irritating log messages early
 
 ///
 /// Activites.
@@ -347,6 +348,11 @@ function get_meta(){
 function get_model(mid){
     if( ! mid ){
 	mid = _get_current_model_id();
+    }
+
+    // Bind the barista client to this model.
+    if( barclient && barclient.okay() ){
+	barclient.connect(mid);
     }
 
     // Construct.
@@ -713,13 +719,3 @@ if( file ){
 //     }
 // }
 // repl_run.context['incr'] = incr;
-
-///
-// get_model('gomodel:5667fdd400000077')
-// model.get_node('gomodel:5667fdd400000077/5667fdd400000347')
-// move_individual('gomodel:5667fdd400000077/5667fdd400000347', 100.0, 100.0)
-//
-
-/// Barely using barclient and telekinesis; gets very chatty.
-// barclient.connect('gomodel:567b544200000029')
-// barclient.telekinesis('gomodel:567b544200000029/567b544200000126', 100, 100)

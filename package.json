@@ -33,7 +33,7 @@
     },
     "dependencies": {
         "amigo2": "2.4.3",
-        "bbop-client-barista": "0.0.4",
+        "bbop-client-barista": "0.0.5",
         "bbop-core": "0.0.5",
         "bbop-graph-noctua": "0.0.27",
         "bbop-manager-golr": "0.0.4",

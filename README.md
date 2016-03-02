@@ -86,6 +86,32 @@ r.add_fact([r.add_individual('GO:0022008'), r.add_individual('GO:0008150'), 'par
 request_with(r)
 ```
 
+Two ways of moving a node remotely. The first is manually, using
+barclient and telekinesis; gets very chatty.
+	
+```node
+get_model('gomodel:567b544200000029')
+barclient.telekinesis('gomodel:567b544200000029/567b544200000126', 100, 100)
+```
+
+The second way uses a helper wrapper.
+
+```node
+get_model('gomodel:5667fdd400000077')
+// model.get_node('gomodel:5667fdd400000077/5667fdd400000347')
+move_individual('gomodel:5667fdd400000077/5667fdd400000347', 100.0, 100.0)
+```
+
+Sending a general warning broadcast to all connected users. First, you
+must connect. While this can be done manually without a model, we'll
+grab a model first to make sure we have some connection. (The barista
+client is designed around a per-model attitude.)
+	
+```node
+get_model('gomodel:567b544200000029')
+barclient.broadcast({"message_type": "warning","message":"The server will catch fire, please save!"})
+```
+
 # API/Objects
 
 This is a list of symbols that are defined or used in the
