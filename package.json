@@ -33,7 +33,7 @@
     },
     "dependencies": {
         "amigo2": "2.4.3",
-        "bbop-client-barista": "0.0.5",
+        "bbop-client-barista": "0.0.7",
         "bbop-core": "0.0.5",
         "bbop-graph-noctua": "0.0.27",
         "bbop-manager-golr": "0.0.4",
@@ -45,7 +45,6 @@
         "golr-conf": "0.0.3",
         "minerva-requests": "0.0.9",
         "minimist": "~1.1.1",
-        "socket.io": "0.9.16",
         "sync-request": "2.0.1",
         "underscore": "~1.8.3"
     },
