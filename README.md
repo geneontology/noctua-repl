@@ -126,7 +126,7 @@ Helpers.
 - 'manager' the bbop-rest-manager with bbop-reponse-minerva
 - 'show' function to display objects more intelligently
 
-Auto-variables--these are attempted to be sent after every call.
+Auto-variables--these are attempted to be set after every call.
 
 - 'token'
 - 'model'

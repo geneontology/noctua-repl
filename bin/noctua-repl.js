@@ -8,6 +8,7 @@
 var bbop = require('bbop-core');
 var fs = require('fs');
 var us = require('underscore');
+var util = require('util');
 var repl = require('repl');
 
 //
@@ -552,6 +553,7 @@ function show_response(){
 	var out = {
 	    'okay': response.okay(),
 	    'user-id': response.user_id(),
+	    'provided-by': response.groups(),
 	    'message_type': response.message_type(),
 	    'message': '"' + response.message() + '"',
 	    'signal': response.signal(),
@@ -613,6 +615,7 @@ var export_context =
 	    // Helpers.
 	    'bbop',
 	    'us',
+	    'util',
 	    'manager',
 	    'show',
 	    'barclient',
