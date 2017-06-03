@@ -36,27 +36,27 @@ See the examples section for more information.
 Connect to a local server with:
 	
 ```bash	
-~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --server http://localhost:3400
+~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=01234 --server http://localhost:3400
 ```
 
 Connection to labs with:
 
 ```bash	
-~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --server http://toaster.lbl.gov:3399 --definition minerva_public_dev
+~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=01234 --server http://toaster.lbl.gov:3399 --definition minerva_public_dev
 ```
 
 Connect to a local server and dump meta-information to a file using
 CLI:
 
 ```bash	
-~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --server http://localhost:3400 --definition minerva_local --command "get_meta(); show(response)" > /tmp/foo.txt
+~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=01234 --server http://localhost:3400 --definition minerva_local --command "get_meta(); show(response)" > /tmp/foo.txt
 ```
 
 Connect to a local server local and dump meta-information to a file
 using a script:
 
 ```bash	
-~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=123 --server http://localhost:3400 --definition minerva_local --file ./scripts/run-script-test.repl.js > /tmp/bar.txt
+~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=01234 --server http://localhost:3400 --definition minerva_local --file ./scripts/run-script-test.repl.js > /tmp/bar.txt
 ```
 
 ## REPL examples
