@@ -112,6 +112,14 @@ get_model('gomodel:567b544200000029')
 barclient.broadcast({"message_type": "warning","message":"The server will catch fire, please save!"})
 ```
 
+Run SPARQL commands off of an endpoint of our choice.
+
+```node
+sparql.endpoint('https://query.wikidata.org/sparql')
+sparql_template('../bbop-manager-sparql/examples/template-01.yaml', {pmid: '999'})
+show(sparql_response.raw())
+```
+
 # API/Objects
 
 This is a list of symbols that are defined or used in the

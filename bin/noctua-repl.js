@@ -74,6 +74,10 @@ var noctua_model = require('bbop-graph-noctua');
 var sync_engine = require('bbop-rest-manager').sync_request;
 var minerva_manager = require('bbop-manager-minerva');
 
+// For JSON SPARQL ops.
+var json_response = require('bbop-rest-response').json;
+var sparql_manager = require('bbop-manager-sparql');
+
 // Barista (telekinesis, etc.) communication.
 var barista_client = require('bbop-client-barista');
 
@@ -255,7 +259,7 @@ function _bad_response_handler(type, resp, man){
     }
     console.error('\n');
 
-    // If the response id defined, assign it back into the REPL.
+    // If the response is defined, assign it back into the REPL.
     repl_run.context['response'] = resp;
 }
 
@@ -300,6 +304,59 @@ manager.register('rebuild', function(resp, man){
 });
 
 ///
+/// Add SPARQL manager and default callbacks to repl.
+///
+
+var sparql_engine = new sync_engine(json_response);
+sparql_engine.headers([['accept', 'application/sparql-results+json']]);
+var sparql = new sparql_manager('http://rdf.geneontology.org/sparql',
+				[],
+				json_response,
+				sparql_engine,
+				'async');
+
+var sparql_response = null;
+
+// Try and make a general "good" response.
+function _good_sparql_response_handler(resp, man){
+
+    console.log('resp', resp);
+    
+    // "Display" the returning data.
+    show(resp.raw());
+
+    // Add the response back into the REPL environment.
+    repl_run.context['sparql_response'] = resp;
+    sparql_response = resp;
+}
+
+// Generic way of handling problems during responses.
+function _bad_sparql_response_handler(resp, man){
+
+    // Deliver a mostly coherent error message.
+    console.error('\n');
+    console.error('There was a ('+ resp.message_type() +'): '+ resp.message());
+    // Sometimes we get more information.
+    if( resp.commentary() ){
+	console.error(resp.commentary());
+    }
+    console.error('\n');
+
+    // If the response is defined, assign it back into the REPL.
+    repl_run.context['sparql_response'] = resp;
+}
+
+// "error" callback.
+sparql.register('error', function(resp, man){
+    _bad_sparql_response_handler(resp, man);
+});
+
+// "success" callback.
+sparql.register('success', function(resp, man){
+    _good_sparql_response_handler(resp, man);
+});
+
+///
 /// Add Barista manager and default callbacks to repl.
 ///
 
@@ -322,6 +379,16 @@ function show(x){
 	    console.log(JSON.stringify(x, null, ' '));
 	}
     }
+}
+
+/** Run sparql templates off the filesystem. */
+function sparql_template(path, vars){
+
+    // Bring in YAML example.
+    var inyml = fs.readFileSync(path).toString();
+
+    // Request, let the synchonous callbacks deal with with happens.
+    return sparql.template(inyml, vars);
 }
 
 /** Union of given class expressions. */
@@ -617,6 +684,7 @@ var export_context =
 	    'us',
 	    'util',
 	    'manager',
+	    'sparql',
 	    'show',
 	    'barclient',
 	    // Auto-variables
@@ -626,6 +694,7 @@ var export_context =
 	    'request_set',
 	    'response',
 	    'query_url',
+	    'sparql_response',
 	    // Class expressions.
 	    'union',
 	    'intersection',
@@ -639,6 +708,8 @@ var export_context =
 	    'add_individual',
 	    'new_request_set',
 	    'request_with',
+	    // SPARQL manager actions.
+	    'sparql_template',
 	    // Bigger fun macros.
 	    'show_models',
 	    'show_response',
