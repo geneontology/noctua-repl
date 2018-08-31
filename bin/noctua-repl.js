@@ -41,7 +41,7 @@ var repl_history = function (repl, file) {  // for some reason, require('repl_hi
     }
     else if (code.length > 0) {
       // console.log('WRITE');
-      fs.write(fd, code + '\n');
+	fs.write(fd, code + '\n', function(){});
     }
     else {
       // console.log('ELSE');
@@ -321,7 +321,7 @@ var sparql_response = null;
 function _good_sparql_response_handler(resp, man){
 
     console.log('resp', resp);
-    
+
     // "Display" the returning data.
     show(resp.raw());
 
@@ -663,7 +663,7 @@ var repl_run = repl.start({
     'useGlobal': true//,
     // // Try and keep everything in this scope.
     // 'eval': function(cmd, context, filename, callback){
-    //     console.log(cmd);    
+    //     console.log(cmd);
     //     callback(null, result);
     // }
 });
