@@ -34,28 +34,28 @@ See the examples section for more information.
 ## CLI examples
 
 Connect to a local server with:
-	
-```bash	
+
+```bash
 ~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=01234 --server http://localhost:3400
 ```
 
 Connection to labs with:
 
-```bash	
-~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=01234 --server http://toaster.lbl.gov:3399 --definition minerva_public_dev
+```bash
+~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=01234 --server http://barista-dev.berkeleybop.org --definition minerva_public_dev
 ```
 
 Connect to a local server and dump meta-information to a file using
 CLI:
 
-```bash	
+```bash
 ~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=01234 --server http://localhost:3400 --definition minerva_local --command "get_meta(); show(response)" > /tmp/foo.txt
 ```
 
 Connect to a local server local and dump meta-information to a file
 using a script:
 
-```bash	
+```bash
 ~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=01234 --server http://localhost:3400 --definition minerva_local --file ./scripts/run-script-test.repl.js > /tmp/bar.txt
 ```
 
@@ -78,7 +78,7 @@ add_individual(intersection(['GO:0022008', 'GO:0008150']))
 
 Add a new model, which gets the default assignment when done. Then
 add two new individuals as arguments to a new fact.
-	
+
 ```node
 add_model()
 var r = new_request_set()
@@ -88,7 +88,7 @@ request_with(r)
 
 Two ways of moving a node remotely. The first is manually, using
 barclient and telekinesis; gets very chatty.
-	
+
 ```node
 get_model('gomodel:567b544200000029')
 barclient.telekinesis('gomodel:567b544200000029/567b544200000126', 100, 100)
@@ -106,7 +106,7 @@ Sending a general warning broadcast to all connected users. First, you
 must connect. While this can be done manually without a model, we'll
 grab a model first to make sure we have some connection. (The barista
 client is designed around a per-model attitude.)
-	
+
 ```node
 get_model('gomodel:567b544200000029')
 barclient.broadcast({"message_type": "warning","message":"The server will catch fire, please save!"})
