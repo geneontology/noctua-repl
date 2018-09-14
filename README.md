@@ -39,7 +39,7 @@ Connect to a local server with:
 ~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=01234 --server http://localhost:3400
 ```
 
-Connection to labs with:
+Connection to the labs/development server with:
 
 ```bash
 ~/local/src/git/noctua-repl$:) reset && node ./bin/noctua-repl.js --token=01234 --server http://barista-dev.berkeleybop.org --definition minerva_public_dev
@@ -61,7 +61,9 @@ using a script:
 
 ## REPL examples
 
-Get all of the meta-information for the current instance.
+Get all of the meta-information for the current instance. *It is
+suggested that you run this as your first command at the beginning of
+every session*.
 
 ```node
 get_meta()
@@ -76,14 +78,43 @@ add_individual('GO:0022008')
 add_individual(intersection(['GO:0022008', 'GO:0008150']))
 ```
 
-Add a new model, which gets the default assignment when done. Then
-add two new individuals as arguments to a new fact.
+Add a new model, which gets the default assignment when done. Then add
+two new individuals as arguments to a new fact. Note that request-set
+operations can usually be chained together.
 
 ```node
 add_model()
-var r = new_request_set()
-r.add_fact([r.add_individual('GO:0022008'), r.add_individual('GO:0008150'), 'part_of'] )
-request_with(r)
+var rs = new_request_set()
+rs.add_fact([rs.add_individual('GO:0022008'), rs.add_individual('GO:0008150'), 'part_of'] )
+request_with(rs)
+```
+
+Note that in this environment, while request-sets have chaining (see
+above), requests do not. For example, to recreate the `get_model()` macro:
+
+```node
+r = new_request('model', 'get');
+r.model('gomodel:5970219a00000333')
+rs = new_request_set().add(r)
+request_with(rs)
+// Or as an insane one-liner:
+request_with(new_request_set().add(r = new_request('model', 'get') && r.model('gomodel:5970219a00000333') && r))
+```
+
+An example of examining a request (use `objectify`), a request-set (use `structure`), and a response (just ).
+
+```node
+r = new_request('model', 'get')
+r.objectify()
+r.model('gomodel:5970219a00000333')
+r.objectify()
+rs = new_request_set().add(r)
+rs.structure()
+request_with(rs)
+response
+response.data()
+g = new_noctua_graph(response.data())
+g.all_nodes()
 ```
 
 Two ways of moving a node remotely. The first is manually, using
@@ -158,6 +189,7 @@ Manager actions--these are manager functions mapped up to the top-level.
 - 'save_model'
 - 'add_individual'
 - 'new_request_set'
+- 'new_request'
 - 'request_with'
 
 Bigger fun function macros.

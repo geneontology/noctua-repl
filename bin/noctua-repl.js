@@ -16,8 +16,8 @@ var repl = require('repl');
 // What follows has been adapted from https://github.com/tmpvar/repl.history
 //
 //  Suggested improvements that should be done:
-//    Write the history out after each 'line', rather than waiting for exit. That way, a crash
-//    won't lose the history that produced it.
+//    Write the history out after each 'line', rather than waiting for
+//    exit. That way, a crash won't lose the history that produced it.
 //
 var repl_history = function (repl, file) {  // for some reason, require('repl_history') doesn't work here.
   try {
@@ -475,6 +475,15 @@ function move_individual(ind_id, x, y){
     return _request_and_save(manager, request_set);
 }
 
+/** Create a new noctua graph to examine the return data. */
+function new_noctua_graph(graph_data){
+    var g = new (noctua_model.graph)();
+
+    g.load_data_basic(graph_data);
+
+    return  g;
+}
+
 /** Create a custom request set from the current environment. */
 function new_request_set(){
     var mid = _get_current_model_id();
@@ -482,6 +491,16 @@ function new_request_set(){
     var reqs = new minerva_requests.request_set(token, mid);
 
     return reqs;
+}
+
+/** Create a custom request (for a set in progress) */
+/** from the current environment. */
+function new_request(entity, operation){
+    var mid = _get_current_model_id();
+
+    var req = new minerva_requests.request(entity,operation);
+
+    return req;
 }
 
 /** Add a custom request set; probably necessary for linking. */
@@ -695,6 +714,8 @@ var export_context =
 	    'response',
 	    'query_url',
 	    'sparql_response',
+	    // Graph creations.
+	    'new_noctua_graph',
 	    // Class expressions.
 	    'union',
 	    'intersection',
@@ -707,6 +728,7 @@ var export_context =
 	    'save_model',
 	    'add_individual',
 	    'new_request_set',
+	    'new_request',
 	    'request_with',
 	    // SPARQL manager actions.
 	    'sparql_template',
